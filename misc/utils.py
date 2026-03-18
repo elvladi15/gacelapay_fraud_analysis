@@ -21,7 +21,7 @@ def generate_exchange_rate(forex_pair):
 
 	df['Open'] = df['Open'].bfill()
 
-	df.to_csv('project/UNCLEANED_CURRENCY_EXCHANGE_RATES/' + forex_pair + '_RATES.csv')
+	df.to_csv('project/UNCLEAN_CURRENCY_EXCHANGE_RATES/' + forex_pair + '_RATES.csv')
 
 def generate_exchange_rates():
 	exchange_rates = ['BRLMXN', 'EURBRL', 'EURMXN', 'EURUSD', 'GBPBRL', 'GBPEUR', 'GBPMXN', 'GBPUSD', 'USDBRL', 'USDMXN']

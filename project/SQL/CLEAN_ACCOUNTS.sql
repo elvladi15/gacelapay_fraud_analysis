@@ -29,7 +29,7 @@ WITH CTE AS
 		END																						AS STATUS,
 		CONCAT(ID, CUSTOMER_ID, CURRENCY, BALANCE, OPEN_DATE, STATUS)							AS CONCATENATION
 	FROM
-		'project/UNCLEANED_DATASETS/accounts.csv'
+		'project/UNCLEAN_DATASETS/accounts.csv'
 )
 SELECT
 	ID,
