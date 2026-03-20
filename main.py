@@ -6,3 +6,6 @@ if not os.path.exists('project/CLEAN_COMBINED_EXCHANGE_RATES.csv'):
 
 if not os.path.exists('project/CLEAN_DATASETS/ACCOUNTS.csv'):
 	generate_csv_file_from_sql('project/SQL/CLEAN_ACCOUNTS.sql', 'project/CLEAN_DATASETS/ACCOUNTS.csv')
+
+if not os.path.exists('project/CLEAN_DATASETS/CUSTOMERS.csv'):
+	generate_csv_file_from_sql('project/SQL/CLEAN_CUSTOMERS.sql', 'project/CLEAN_DATASETS/CUSTOMERS.csv')

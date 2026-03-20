@@ -1,11 +1,11 @@
 import xlwings as xw
 import duckdb
+from duckdb.sqltypes import VARCHAR
 import os
 import yfinance as yf
 import pandas as pd
 from datetime import date, timedelta
 from pathlib import Path
-
 
 def generate_exchange_rate(forex_pair):
 	start_date = date(2022, 1, 1)
