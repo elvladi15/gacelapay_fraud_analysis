@@ -1,6 +1,5 @@
 import xlwings as xw
 import duckdb
-from duckdb.sqltypes import VARCHAR
 import os
 import yfinance as yf
 import pandas as pd

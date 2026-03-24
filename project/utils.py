@@ -1,5 +1,5 @@
 import duckdb
-from duckdb.sqltypes import VARCHAR
+from duckdb.sqltypes import VARCHAR, BOOLEAN
 from pathlib import Path
 import gender_guesser.detector as gender
 import pycountry
@@ -19,6 +19,7 @@ def get_ml_result(is_fraud, flagged):
 
 duckdb.create_function('GUESS_GENDER', guess_gender, [VARCHAR], VARCHAR)
 duckdb.create_function('DETECT_COUNTRY', detect_country, [VARCHAR], VARCHAR)
+duckdb.create_function('GET_ML_RESULT', get_ml_result, [BOOLEAN, BOOLEAN], VARCHAR)
 
 def generate_csv_file_from_sql(sql_query_path, output_file_path):
 	sql_file = Path(sql_query_path)
