@@ -3,6 +3,28 @@ from scipy.special import logit, expit
 import project.utils
 import pandas as pd
 import math
+import multiprocessing as mp
+import time
+
+file_name = 'project/ANALYSIS/FRAUD_STATISTICS.csv'
+
+column_order = [
+		'FRAUD_ANALYSIS_ID',
+		'W1',
+		'W2',
+		'W3',
+		'THRESHOLD',
+		'FALSE_POSITIVE_RATE',
+		'GRAND_TOTAL',
+		'FRAUD_DETECTION_RATE',
+		'PRECISION',
+		'ACCURACY',
+		'USD_FEES',
+		'TOTAL_FRAUD_LOSS',
+		'TOTAL_INVESTIGATION_COST',
+		'TOTAL_CUSTOMER_SUPPORT_COST',
+		'TOTAL_LOST_INTERCHANGE'
+]
 
 def get_transaction_statistics_df(weights, threshold):
 	threshold_probability = threshold / 1000
@@ -36,24 +58,7 @@ def get_transaction_statistics_df(weights, threshold):
 	fraud_statistics_df.at[0, 'W3'] = weights[2]
 	fraud_statistics_df.at[0, 'THRESHOLD'] = threshold
 
-	fraud_statistics_df = fraud_statistics_df.reindex(columns=
-	[
-		'FRAUD_ANALYSIS_ID',
-		'W1',
-		'W2',
-		'W3',
-		'THRESHOLD',
-		'FALSE_POSITIVE_RATE',
-		'GRAND_TOTAL',
-		'FRAUD_DETECTION_RATE',
-		'PRECISION',
-		'ACCURACY',
-		'USD_FEES',
-		'TOTAL_FRAUD_LOSS',
-		'TOTAL_INVESTIGATION_COST',
-		'TOTAL_CUSTOMER_SUPPORT_COST',
-		'TOTAL_LOST_INTERCHANGE'
-	])
+	fraud_statistics_df = fraud_statistics_df.reindex(columns=column_order)
 
 	return fraud_statistics_df
 
@@ -64,11 +69,61 @@ def get_weights_list_for_parameter(weight_details):
 	
 	return output_list
 
-def create_fraud_statistics_csv():
-	file_name = 'project/ANALYSIS/FRAUD_STATISTICS.csv'
-
+def get_test_cases(weight_parameters, threshold_parameters):
+	test_case_parameters = []
 	weight_list = []
 
+	for weight_parameter in weight_parameters:
+		weight_list.append(get_weights_list_for_parameter(weight_parameter))
+
+	threshold_list = get_weights_list_for_parameter(threshold_parameters)
+
+	weight_list.append(threshold_list)
+
+	total_cases_quantity = 1
+	list_weights_for_iteration = []
+
+	for list in weight_list:
+		total_cases_quantity *= len(list)
+
+	weight = total_cases_quantity
+
+	for list in weight_list:
+		weight /= len(list)
+
+		list_weights_for_iteration.append({'count': len(list), 'weight': weight})
+
+	for i in range(total_cases_quantity):
+		index_list = []
+		
+		remnant = i
+
+		for item in list_weights_for_iteration:
+			index = math.floor(remnant /item['weight'])
+
+			index_list.append(index)
+
+			remnant -= index * item['weight']
+		
+		final_weight_list = []
+
+		for index, item in enumerate(index_list[:-1]):
+			final_weight_list.append(weight_list[index][item])
+
+		final_threshold = threshold_list[index_list[-1]]
+
+		test_case_parameters.append({'weight_list': final_weight_list, 'threshold': final_threshold})
+
+	return test_case_parameters
+
+def append_test_case_to_csv(test_case):
+	df = get_transaction_statistics_df(test_case['weight_list'], test_case['threshold'])
+
+	df.to_csv(file_name, mode='a', index=False, header=False)
+
+if __name__ == "__main__":
+	start_time = time.time()
+	
 	weight_parameters = [
 		{
 			'value': -6.57343924,
@@ -93,58 +148,21 @@ def create_fraud_statistics_csv():
 		'quantity': 3
 	}
 
-	for weight_parameter in weight_parameters:
-		weight_list.append(get_weights_list_for_parameter(weight_parameter))
+	df = pd.DataFrame(columns=column_order)
+	
+	df.to_csv(file_name, index=False)
+	
+	with mp.Pool(mp.cpu_count()) as pool:
+		test_cases = get_test_cases(weight_parameters, threshold_parameters)
 
-	threshold_list = get_weights_list_for_parameter(threshold_parameters)
-
-	weight_list.append(threshold_list)
-
-	total_cases_quantity = 1
-	list_weights_for_iteration = []
-
-	for list in weight_list:
-		total_cases_quantity *= len(list)
-
-	weight = total_cases_quantity
-
-	for list in weight_list:
-		weight /= len(list)
-
-		list_weights_for_iteration.append({'Count': len(list), 'Weight': weight})
-
-	#all_indexes_list = []
-
-	for i in range(total_cases_quantity):
-		index_list = []
+		print(len(test_cases))
 		
-		remnant = i
-
-		for item in list_weights_for_iteration:
-			index = math.floor(remnant /item['Weight'])
-
-			index_list.append(index)
-
-			remnant -= index * item['Weight']
-		
-		final_weight_list = []
-
-		for index, item in enumerate(index_list[:-1]):
-			final_weight_list.append(weight_list[index][item])
-
-		final_threshold = threshold_list[index_list[-1]]
-
-		df = get_transaction_statistics_df(final_weight_list, final_threshold)
-
-		if i == 0:
-			df.to_csv(file_name, index=False)
-		else:
-			df.to_csv(file_name, mode='a', index=False, header=False)
-
+		pool.map(append_test_case_to_csv, test_cases)
+	
 	sorted_df = pd.read_csv(file_name)
 
 	sorted_df = sorted_df.sort_values(by=['FALSE_POSITIVE_RATE', 'GRAND_TOTAL'], ascending=[True, False])
 
 	sorted_df.to_csv(file_name, index=False)
 
-create_fraud_statistics_csv()
+	print(f'Total time taken: {time.time() - start_time:.2f} seconds.')
