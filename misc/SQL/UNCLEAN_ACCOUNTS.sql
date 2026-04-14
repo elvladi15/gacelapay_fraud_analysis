@@ -38,7 +38,7 @@ SELECT
 			END
 		ELSE TYPE
 	END	AS TYPE,
-	
+
 	CASE
 		WHEN CURRENCY = 'BRL' THEN
 			CASE CAST(FLOOR(random() * (3 - 1 + 1)) + 1 AS int)

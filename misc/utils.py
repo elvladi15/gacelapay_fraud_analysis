@@ -32,7 +32,7 @@ def output_query_result_from_sql(sql_query_path):
 	sql_file = Path(sql_query_path)
 
 	output_file = Path('misc/QUERY_RESULTS.xlsx')
-	
+
 	if os.path.exists(output_file):
 		wb = xw.Book(output_file)
 		wb.save(output_file)
@@ -41,7 +41,7 @@ def output_query_result_from_sql(sql_query_path):
 
 	sheet =  wb.sheets[0]
 
-	sql_query= open(sql_file, 'r').read()
+	sql_query = open(sql_file, 'r').read()
 
 	df = duckdb.sql(sql_query).df()
 
@@ -49,9 +49,9 @@ def output_query_result_from_sql(sql_query_path):
 
 	sheet.range('A1').options(index=False).value = df
 
-	sheet.used_range.api.AutoFilter(Field:=1) 
+	sheet.used_range.api.AutoFilter(Field:=1)
 
-	sheet.autofit(axis='columns') 
+	sheet.autofit(axis='columns')
 
 	wb.api.RefreshAll()
 

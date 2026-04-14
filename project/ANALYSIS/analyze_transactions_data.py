@@ -7,26 +7,78 @@ import math
 import multiprocessing as mp
 import time
 from pathlib import Path
-
-global_file_name = ''
+from project.utils import generate_csv_file_from_sql
 
 column_order = [
 		'FRAUD_ANALYSIS_ID',
-		'W1',
-		'W2',
-		'W3',
 		'THRESHOLD',
 		'FALSE_POSITIVE_RATE',
 		'GRAND_TOTAL',
 		'FRAUD_DETECTION_RATE',
 		'PRECISION',
 		'ACCURACY',
-		'USD_FEES',
+		'TOTAL_USD_FEES',
 		'TOTAL_FRAUD_LOSS',
 		'TOTAL_INVESTIGATION_COST',
 		'TOTAL_CUSTOMER_SUPPORT_COST',
 		'TOTAL_LOST_INTERCHANGE'
 ]
+
+weight_columns = []
+
+for i in range(len(features.features_list)):
+	weight_columns.append(f'W{i + 1}')
+
+column_order[2:2] = weight_columns
+
+class Runner:
+	def __init__(self, file_name, test_cases):
+		self.file_name = file_name
+		self.test_cases = test_cases
+		self.start_time = time.time()
+
+	def create_test_cases_csv(self):
+		try:
+			df = pd.DataFrame(columns=column_order)
+
+			df.to_csv(self.file_name, index=False)
+
+			with mp.Pool(mp.cpu_count()) as pool:
+				pool.map(self.append_test_case_to_csv, self.test_cases)
+		except:
+			print('Error while sortinf the file. Undergo manual review.')
+
+	def sort_generated_file(self):
+		sorted_df = pd.read_csv(self.file_name)
+
+		sorted_df = sorted_df.sort_values(by=['FALSE_POSITIVE_RATE', 'GRAND_TOTAL'], ascending=[True, False])
+
+		sorted_df.to_csv(self.file_name, index=False)
+
+		print(f'Total time taken to generate and order the file: {self.file_name}: {time.time() - self.start_time:.2f} seconds.')
+
+	def append_test_case_to_csv(self, test_case):
+		weights = test_case['weight_list']
+		threshold = test_case['threshold']
+
+		test_case_transactions_df = get_test_case_transactions_df(test_case)
+
+		fraud_statistics_df = duckdb.sql(open('project/SQL/GET_FRAUD_STATISTICS.sql', 'r').read()).df()
+
+		for index in range(len(features.features_list)):
+			fraud_statistics_df.at[0, f'W{index + 1}'] = weights[index]
+
+		fraud_statistics_df.at[0, 'THRESHOLD'] = threshold
+
+		fraud_statistics_df = fraud_statistics_df.reindex(columns=column_order)
+
+		fraud_statistics_df.to_csv(self.file_name, mode='a', index=False, header=False)
+
+	@classmethod
+	def run_many(cls, configs):
+		for file_name, test_cases in configs:
+			cls(file_name, test_cases).create_test_cases_csv()
+			cls(file_name, test_cases).sort_generated_file()
 
 def get_test_case_transactions_df(test_case):
 	weights = test_case['weight_list']
@@ -41,147 +93,93 @@ def get_test_case_transactions_df(test_case):
 
 		logit_value = logit(ml_probability)
 
-		#feature 1
-		if features.feature_1_test(joined_tables_for_analysis.at[row.Index, 'TIME']):
-			logit_value += weights[0]
+		for index, feature in enumerate(features.features_list):
+			parameter_list = []
 
-		#feature 2
-		if features.feature_2_test(joined_tables_for_analysis.at[row.Index, 'CUSTOMER_COUNTRY']):
-			logit_value += weights[1]
+			for column_name in feature['columns']:
+				parameter_list.append(joined_tables_for_analysis.at[row.Index, column_name])
 
-		#feature 3
-		if features.feature_3_test(joined_tables_for_analysis.at[row.Index, 'TRANSACTION_USD_AMOUNT']):
-			logit_value += weights[2]
+			condition_met = feature['function'](*parameter_list)
+
+			if condition_met:
+				logit_value += weights[index]
 
 		joined_tables_for_analysis.at[row.Index, 'FLAGGED'] = 1 if expit(logit_value) >= threshold_probability else 0
 
-		#joined_tables_for_analysis = get_test_case_transactions_df({'weight_list': [-5.07343924, 2.4844875, 2.9017253], 'threshold': 850})
+	sql_file = Path('project/SQL/TEST_CASE_RESULTS.sql')
 
-		sql_file = Path('project/SQL/TEST_CASE_RESULTS.sql')
+	sql_query = open(sql_file, 'r').read()
 
-		sql_query = open(sql_file, 'r').read()
-
-		return duckdb.sql(sql_query).df()
-
-def append_test_case_to_csv(test_case):
-	weights = test_case['weight_list']
-	threshold = test_case['threshold']
-
-	test_case_transactions_df = get_test_case_transactions_df(test_case)
-
-	fraud_statistics_df = duckdb.sql(open('project/SQL/GET_FRAUD_STATISTICS.sql', 'r').read()).df()
-
-	fraud_statistics_df.at[0, 'W1'] = weights[0]
-	fraud_statistics_df.at[0, 'W2'] = weights[1]
-	fraud_statistics_df.at[0, 'W3'] = weights[2]
-
-	fraud_statistics_df.at[0, 'THRESHOLD'] = threshold
-
-	fraud_statistics_df = fraud_statistics_df.reindex(columns=column_order)
-
-	fraud_statistics_df.to_csv(global_file_name, mode='a', index=False, header=False)
-
-def get_weights_list_for_parameter(weight_details):
-	output_list = []
-	for i in range(2 * weight_details['quantity'] + 1):
-		output_list.append(round((i - weight_details['quantity']) * weight_details['steps'] + weight_details['value'], 4))
-	
-	return output_list
+	return duckdb.sql(sql_query).df()
 
 def get_test_cases(weight_parameters, threshold_parameters):
-	test_case_parameters = []
-	weight_list = []
+		test_case_parameters = []
+		weight_list = []
 
-	for weight_parameter in weight_parameters:
-		weight_list.append(get_weights_list_for_parameter(weight_parameter))
+		for weight_parameter in weight_parameters:
+			weight_list.append(get_weights_list_for_parameter(weight_parameter))
 
-	threshold_list = get_weights_list_for_parameter(threshold_parameters)
+		threshold_list = get_weights_list_for_parameter(threshold_parameters)
 
-	weight_list.append(threshold_list)
+		weight_list.append(threshold_list)
 
-	total_cases_quantity = 1
-	list_weights_for_iteration = []
+		total_cases_quantity = 1
+		list_weights_for_iteration = []
 
-	for list in weight_list:
-		total_cases_quantity *= len(list)
+		for list in weight_list:
+			total_cases_quantity *= len(list)
 
-	weight = total_cases_quantity
+		weight = total_cases_quantity
 
-	for list in weight_list:
-		weight /= len(list)
+		for list in weight_list:
+			weight /= len(list)
 
-		list_weights_for_iteration.append(weight)
+			list_weights_for_iteration.append(weight)
 
-	for i in range(total_cases_quantity):
-		index_list = []
-		
-		remnant = i
+		for i in range(total_cases_quantity):
+			index_list = []
 
-		for weight in list_weights_for_iteration:
-			index = math.floor(remnant /weight)
+			remnant = i
 
-			index_list.append(index)
+			for weight in list_weights_for_iteration:
+				index = math.floor(remnant /weight)
 
-			remnant -= index * weight
-		
-		final_weight_list = []
+				index_list.append(index)
 
-		for index, item in enumerate(index_list[:-1]):
-			final_weight_list.append(weight_list[index][item])
+				remnant -= index * weight
 
-		final_threshold = threshold_list[index_list[-1]]
+			final_weight_list = []
 
-		test_case_parameters.append({'weight_list': final_weight_list, 'threshold': final_threshold})
+			for index, item in enumerate(index_list[:-1]):
+				final_weight_list.append(weight_list[index][item])
 
-	return test_case_parameters
+			final_threshold = threshold_list[index_list[-1]]
 
-def create_test_cases_csv(file_name, test_cases):
-	global global_file_name
+			test_case_parameters.append({'weight_list': final_weight_list, 'threshold': final_threshold})
 
-	global_file_name = file_name
+		return test_case_parameters
 
-	if __name__ == '__main__':
-		df = pd.DataFrame(columns=column_order)
-		
-		df.to_csv(file_name, index=False)
-		
-		with mp.Pool(mp.cpu_count()) as pool:
-			start_time = time.time()
-			pool.map(append_test_case_to_csv, test_cases)
-		
-		sorted_df = pd.read_csv(file_name)
+def get_weights_list_for_parameter(weight_details):
+		output_list = []
+		for i in range(2 * weight_details['quantity'] + 1):
+			output_list.append(round((i - weight_details['quantity']) * weight_details['steps'] + weight_details['value'], 4))
 
-		sorted_df = sorted_df.sort_values(by=['FALSE_POSITIVE_RATE', 'GRAND_TOTAL'], ascending=[True, False])
+		return output_list
 
-		sorted_df.to_csv(file_name, index=False)
+def compare_test_cases():
+	test_case_1 = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv')
+	test_case_2 = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS.csv').head(1)
 
-		print(f'Total time taken to generate file: {global_file_name}: {time.time() - start_time:.2f} seconds.')
+	sql_file = Path('project/SQL/COMPARE_TEST_CASES.sql')
 
-weight_parameters = [
-	{
-		'value': -6.5734,
-		'steps': 0.5,
-		'quantity': 3
-	},
-	{
-		'value': 1.9844,
-		'steps': 0.5,
-		'quantity': 3
-	},
-	{
-		'value': 2.9017,
-		'steps': 0.5,
-		'quantity': 3
-	},
-]
+	sql_query = open(sql_file, 'r').read()
 
-threshold_parameters = {
-	'value': 700,
-	'steps': 50,
-	'quantity': 3
-}
+	duckdb.sql(sql_query).df().to_csv('project/ANALYSIS/COMPARE_TEST_CASES.csv', index = False, encoding='utf-8-sig')
 
-create_test_cases_csv('project/ANALYSIS/FRAUD_STATISTICS_BASE_CASE.csv', [{'weight_list': [0, 0, 0], 'threshold': 700}])
-#create_test_cases_csv('project/ANALYSIS/FRAUD_STATISTICS.csv', get_test_cases(weight_parameters, threshold_parameters))
+	print('Parameters of the best test case execution:')
 
-#print(get_test_case_transactions_df({'weight_list': [-5.07343924, 2.4844875, 2.9017253], 'threshold': 850}))
+	for column in test_case_2.columns:
+		if(len(column) == 2 and column[0] == 'W'):
+			print(f'{column}: {test_case_2[column][0]}')
+
+	print(f'THRESHOLD: {test_case_2['THRESHOLD'][0]}')
