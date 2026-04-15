@@ -38,24 +38,25 @@ class Runner:
 		self.start_time = time.time()
 
 	def create_test_cases_csv(self):
-		try:
-			df = pd.DataFrame(columns=column_order)
+		df = pd.DataFrame(columns=column_order)
 
-			df.to_csv(self.file_name, index=False)
+		df.to_csv(self.file_name, index=False)
 
-			with mp.Pool(mp.cpu_count()) as pool:
-				pool.map(self.append_test_case_to_csv, self.test_cases)
-		except:
-			print('Error while sortinf the file. Undergo manual review.')
+		with mp.Pool(mp.cpu_count()) as pool:
+			pool.map(self.append_test_case_to_csv, self.test_cases)
 
 	def sort_generated_file(self):
-		sorted_df = pd.read_csv(self.file_name)
+		try:
+			sorted_df = pd.read_csv(self.file_name)
 
-		sorted_df = sorted_df.sort_values(by=['FALSE_POSITIVE_RATE', 'GRAND_TOTAL'], ascending=[True, False])
+			sorted_df = sorted_df.sort_values(by=['FALSE_POSITIVE_RATE', 'GRAND_TOTAL'], ascending=[True, False])
 
-		sorted_df.to_csv(self.file_name, index=False)
+			sorted_df.to_csv(self.file_name, index=False)
 
-		print(f'Total time taken to generate and order the file: {self.file_name}: {time.time() - self.start_time:.2f} seconds.')
+			print(f'Total time taken to generate and order the file: {self.file_name}: {time.time() - self.start_time:.2f} seconds.')
+		except Exception as e:
+			print('Error while sorting the file. Undergo manual review.')
+			print(f'Error message: {e}')
 
 	def append_test_case_to_csv(self, test_case):
 		weights = test_case['weight_list']
