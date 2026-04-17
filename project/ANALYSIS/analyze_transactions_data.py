@@ -9,6 +9,8 @@ import time
 from pathlib import Path
 from project.utils import generate_csv_file_from_sql
 
+joined_tables_for_analysis = duckdb.sql(open('project/SQL/JOIN_ALL_TABLES_FOR_ANALYSIS.sql', 'r').read()).df()
+
 column_order = [
 		'FRAUD_ANALYSIS_ID',
 		'THRESHOLD',
@@ -86,8 +88,6 @@ def get_test_case_transactions_df(test_case):
 	threshold = test_case['threshold']
 
 	threshold_probability = threshold / 1000
-
-	joined_tables_for_analysis = duckdb.sql(open('project/SQL/JOIN_ALL_TABLES_FOR_ANALYSIS.sql', 'r').read()).df()
 
 	for row in joined_tables_for_analysis.itertuples():
 		ml_probability = joined_tables_for_analysis.at[row.Index, 'ML_PROBABILITY']

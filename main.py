@@ -62,8 +62,8 @@ if __name__ == '__main__':
 	Runner.run_many(
 		[
 			('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv', [base_test_case]),
-			('project/ANALYSIS/FRAUD_STATISTICS.csv', test_cases)
+			#('project/ANALYSIS/FRAUD_STATISTICS.csv', test_cases[:1])
 		]
 	)
 
-	compare_test_cases()
+	#compare_test_cases()

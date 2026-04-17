@@ -1,0 +1,1780 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 20261.26.0226.1626                               -->
+<workbook original-version='18.1' source-build='2026.1.0 (20261.26.0226.1626)' source-platform='win' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <AnimationOnByDefault />
+    <MarkAnimation />
+    <ObjectModelEncapsulateLegacy />
+    <ObjectModelExtractV2 />
+    <ObjectModelTableType />
+    <ParameterAction />
+    <ParameterActionClearSelection />
+    <SchemaViewerObjectModel />
+    <SheetIdentifierTracking />
+    <_.fcp.VConnDownstreamExtractsWithWarnings.true...VConnDownstreamExtractsWithWarnings />
+    <WindowsPersistSimpleIdentifiers />
+  </document-format-change-manifest>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource hasconnection='false' inline='true' name='Parameters' version='18.1'>
+      <aliases enabled='yes' />
+      <column caption='AxisEnd' datatype='datetime' name='[AxisEnd]' param-domain-type='any' role='measure' type='quantitative' value='#2026-02-12 04:58:31.432#'>
+        <calculation class='tableau' formula='#2026-02-12 04:58:31.432#' />
+      </column>
+    </datasource>
+    <datasource caption='ACCOUNTS.csv+ (Multiple Connections)' inline='true' name='federated.07dcy720vktba51h64gki1mz3cbc' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='ACCOUNTS' name='textscan.1d1awin0sht0iw1chg5cu1vkj9wv'>
+            <connection class='textscan' directory='C:/Users/vfrancisco/Desktop/repos/gacelapay_fraud_analysis/project/CLEAN_DATASETS' filename='ACCOUNTS.csv' password='' server='' />
+          </named-connection>
+          <named-connection caption='CUSTOMERS' name='textscan.04yq5vt00dh02m1ciosvt0szoahc'>
+            <connection class='textscan' directory='C:/Users/vfrancisco/Desktop/repos/gacelapay_fraud_analysis/project/CLEAN_DATASETS' filename='CUSTOMERS.csv' password='' server='' />
+          </named-connection>
+          <named-connection caption='DENORMALIZED_TRANSACTIONS' name='textscan.1u1nvgg0wv5zed1fp8r9s05vwuru'>
+            <connection class='textscan' directory='C:/Users/vfrancisco/Desktop/repos/gacelapay_fraud_analysis/project/ANALYSIS' filename='DENORMALIZED_TRANSACTIONS.csv' password='' server='' />
+          </named-connection>
+        </named-connections>
+        <relation type='collection'>
+          <relation connection='textscan.1d1awin0sht0iw1chg5cu1vkj9wv' name='ACCOUNTS.csv' table='[ACCOUNTS#csv]' type='table'>
+            <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+              <column datatype='string' name='ID' ordinal='0' />
+              <column datatype='string' name='CUSTOMER_ID' ordinal='1' />
+              <column datatype='string' name='TYPE' ordinal='2' />
+              <column datatype='string' name='CURRENCY' ordinal='3' />
+              <column datatype='real' name='BALANCE' ordinal='4' />
+              <column datatype='date' name='OPEN_DATE' ordinal='5' />
+              <column datatype='string' name='STATUS' ordinal='6' />
+            </columns>
+          </relation>
+          <relation connection='textscan.1d1awin0sht0iw1chg5cu1vkj9wv' name='CUSTOMERS.csv' table='[CUSTOMERS#csv]' type='table'>
+            <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+              <column datatype='string' name='ID' ordinal='0' />
+              <column datatype='string' name='FULL_NAME' ordinal='1' />
+              <column datatype='integer' name='AGE' ordinal='2' />
+              <column datatype='string' name='GENDER' ordinal='3' />
+              <column datatype='string' name='COUNTRY' ordinal='4' />
+              <column datatype='integer' name='CREDIT_LIMIT' ordinal='5' />
+              <column datatype='integer' name='CUSTOMER_LIFETIME_VALUE' ordinal='6' />
+            </columns>
+          </relation>
+          <relation connection='textscan.1u1nvgg0wv5zed1fp8r9s05vwuru' name='DENORMALIZED_TRANSACTIONS.csv' table='[DENORMALIZED_TRANSACTIONS#csv]' type='table'>
+            <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+              <column datatype='string' name='ID' ordinal='0' />
+              <column datatype='string' name='ACCOUNT_ID' ordinal='1' />
+              <column datatype='date' name='DATE' ordinal='2' />
+              <column datatype='datetime' name='TIME' ordinal='3' />
+              <column datatype='string' name='CURRENCY' ordinal='4' />
+              <column datatype='real' name='UNPROCESSED_USD_FEES' ordinal='5' />
+              <column datatype='real' name='TRANSACTION_USD_AMOUNT' ordinal='6' />
+              <column datatype='string' name='MERCHANT_CATEGORY' ordinal='7' />
+              <column datatype='string' name='CHANNEL' ordinal='8' />
+              <column datatype='string' name='COUNTRY' ordinal='9' />
+              <column datatype='real' name='COST_VARIATION_FACTOR' ordinal='10' />
+              <column datatype='integer' name='ML_SCORE' ordinal='11' />
+              <column datatype='integer' name='IS_FRAUD' ordinal='12' />
+            </columns>
+          </relation>
+        </relation>
+        <cols>
+          <map key='[ACCOUNT_ID]' value='[DENORMALIZED_TRANSACTIONS.csv].[ACCOUNT_ID]' />
+          <map key='[AGE]' value='[CUSTOMERS.csv].[AGE]' />
+          <map key='[BALANCE]' value='[ACCOUNTS.csv].[BALANCE]' />
+          <map key='[CHANNEL]' value='[DENORMALIZED_TRANSACTIONS.csv].[CHANNEL]' />
+          <map key='[COST_VARIATION_FACTOR]' value='[DENORMALIZED_TRANSACTIONS.csv].[COST_VARIATION_FACTOR]' />
+          <map key='[COUNTRY (DENORMALIZED_TRANSACTIONS.csv)]' value='[DENORMALIZED_TRANSACTIONS.csv].[COUNTRY]' />
+          <map key='[COUNTRY]' value='[CUSTOMERS.csv].[COUNTRY]' />
+          <map key='[CREDIT_LIMIT]' value='[CUSTOMERS.csv].[CREDIT_LIMIT]' />
+          <map key='[CURRENCY (DENORMALIZED_TRANSACTIONS.csv)]' value='[DENORMALIZED_TRANSACTIONS.csv].[CURRENCY]' />
+          <map key='[CURRENCY]' value='[ACCOUNTS.csv].[CURRENCY]' />
+          <map key='[CUSTOMER_ID]' value='[ACCOUNTS.csv].[CUSTOMER_ID]' />
+          <map key='[CUSTOMER_LIFETIME_VALUE]' value='[CUSTOMERS.csv].[CUSTOMER_LIFETIME_VALUE]' />
+          <map key='[DATE]' value='[DENORMALIZED_TRANSACTIONS.csv].[DATE]' />
+          <map key='[FULL_NAME]' value='[CUSTOMERS.csv].[FULL_NAME]' />
+          <map key='[GENDER]' value='[CUSTOMERS.csv].[GENDER]' />
+          <map key='[ID (CUSTOMERS.csv)]' value='[CUSTOMERS.csv].[ID]' />
+          <map key='[ID (DENORMALIZED_TRANSACTIONS.csv)]' value='[DENORMALIZED_TRANSACTIONS.csv].[ID]' />
+          <map key='[ID]' value='[ACCOUNTS.csv].[ID]' />
+          <map key='[IS_FRAUD]' value='[DENORMALIZED_TRANSACTIONS.csv].[IS_FRAUD]' />
+          <map key='[MERCHANT_CATEGORY]' value='[DENORMALIZED_TRANSACTIONS.csv].[MERCHANT_CATEGORY]' />
+          <map key='[ML_SCORE]' value='[DENORMALIZED_TRANSACTIONS.csv].[ML_SCORE]' />
+          <map key='[OPEN_DATE]' value='[ACCOUNTS.csv].[OPEN_DATE]' />
+          <map key='[STATUS]' value='[ACCOUNTS.csv].[STATUS]' />
+          <map key='[TIME]' value='[DENORMALIZED_TRANSACTIONS.csv].[TIME]' />
+          <map key='[TRANSACTION_USD_AMOUNT]' value='[DENORMALIZED_TRANSACTIONS.csv].[TRANSACTION_USD_AMOUNT]' />
+          <map key='[TYPE]' value='[ACCOUNTS.csv].[TYPE]' />
+          <map key='[UNPROCESSED_USD_FEES]' value='[DENORMALIZED_TRANSACTIONS.csv].[UNPROCESSED_USD_FEES]' />
+        </cols>
+        <metadata-records>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[ACCOUNTS.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[CUSTOMERS.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>ID</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[ID]</local-name>
+            <parent-name>[ACCOUNTS.csv]</parent-name>
+            <remote-alias>ID</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CUSTOMER_ID</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[CUSTOMER_ID]</local-name>
+            <parent-name>[ACCOUNTS.csv]</parent-name>
+            <remote-alias>CUSTOMER_ID</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>TYPE</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[TYPE]</local-name>
+            <parent-name>[ACCOUNTS.csv]</parent-name>
+            <remote-alias>TYPE</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CURRENCY</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[CURRENCY]</local-name>
+            <parent-name>[ACCOUNTS.csv]</parent-name>
+            <remote-alias>CURRENCY</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>BALANCE</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[BALANCE]</local-name>
+            <parent-name>[ACCOUNTS.csv]</parent-name>
+            <remote-alias>BALANCE</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>OPEN_DATE</remote-name>
+            <remote-type>133</remote-type>
+            <local-name>[OPEN_DATE]</local-name>
+            <parent-name>[ACCOUNTS.csv]</parent-name>
+            <remote-alias>OPEN_DATE</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>date</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>STATUS</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[STATUS]</local-name>
+            <parent-name>[ACCOUNTS.csv]</parent-name>
+            <remote-alias>STATUS</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>ID</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[ID (CUSTOMERS.csv)]</local-name>
+            <parent-name>[CUSTOMERS.csv]</parent-name>
+            <remote-alias>ID</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>FULL_NAME</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[FULL_NAME]</local-name>
+            <parent-name>[CUSTOMERS.csv]</parent-name>
+            <remote-alias>FULL_NAME</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>AGE</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[AGE]</local-name>
+            <parent-name>[CUSTOMERS.csv]</parent-name>
+            <remote-alias>AGE</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>GENDER</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[GENDER]</local-name>
+            <parent-name>[CUSTOMERS.csv]</parent-name>
+            <remote-alias>GENDER</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>COUNTRY</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[COUNTRY]</local-name>
+            <parent-name>[CUSTOMERS.csv]</parent-name>
+            <remote-alias>COUNTRY</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CREDIT_LIMIT</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[CREDIT_LIMIT]</local-name>
+            <parent-name>[CUSTOMERS.csv]</parent-name>
+            <remote-alias>CREDIT_LIMIT</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CUSTOMER_LIFETIME_VALUE</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[CUSTOMER_LIFETIME_VALUE]</local-name>
+            <parent-name>[CUSTOMERS.csv]</parent-name>
+            <remote-alias>CUSTOMER_LIFETIME_VALUE</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>ID</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[ID (DENORMALIZED_TRANSACTIONS.csv)]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>ID</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>ACCOUNT_ID</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[ACCOUNT_ID]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>ACCOUNT_ID</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>DATE</remote-name>
+            <remote-type>133</remote-type>
+            <local-name>[DATE]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>DATE</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>date</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>TIME</remote-name>
+            <remote-type>134</remote-type>
+            <local-name>[TIME]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>TIME</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Hour</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CURRENCY</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[CURRENCY (DENORMALIZED_TRANSACTIONS.csv)]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>CURRENCY</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>UNPROCESSED_USD_FEES</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[UNPROCESSED_USD_FEES]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>UNPROCESSED_USD_FEES</remote-alias>
+            <ordinal>19</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>TRANSACTION_USD_AMOUNT</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[TRANSACTION_USD_AMOUNT]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>TRANSACTION_USD_AMOUNT</remote-alias>
+            <ordinal>20</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>MERCHANT_CATEGORY</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[MERCHANT_CATEGORY]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>MERCHANT_CATEGORY</remote-alias>
+            <ordinal>21</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CHANNEL</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[CHANNEL]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>CHANNEL</remote-alias>
+            <ordinal>22</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>COUNTRY</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[COUNTRY (DENORMALIZED_TRANSACTIONS.csv)]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>COUNTRY</remote-alias>
+            <ordinal>23</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>COST_VARIATION_FACTOR</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[COST_VARIATION_FACTOR]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>COST_VARIATION_FACTOR</remote-alias>
+            <ordinal>24</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>ML_SCORE</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[ML_SCORE]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>ML_SCORE</remote-alias>
+            <ordinal>25</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>IS_FRAUD</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[IS_FRAUD]</local-name>
+            <parent-name>[DENORMALIZED_TRANSACTIONS.csv]</parent-name>
+            <remote-alias>IS_FRAUD</remote-alias>
+            <ordinal>26</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='Account Id' datatype='string' name='[ACCOUNT_ID]' role='dimension' type='nominal' />
+      <column caption='Balance' datatype='real' name='[BALANCE]' role='measure' type='quantitative' />
+      <column caption='Channel' datatype='string' name='[CHANNEL]' role='dimension' type='nominal' />
+      <column caption='Cost Variation Factor' datatype='real' name='[COST_VARIATION_FACTOR]' role='measure' type='quantitative' />
+      <column caption='COUNTRY (DENORMALIZED TRANSACTIONS.csv)' datatype='string' name='[COUNTRY (DENORMALIZED_TRANSACTIONS.csv)]' role='dimension' semantic-role='[Country].[ISO3166_2]' type='nominal' />
+      <column caption='Country' datatype='string' name='[COUNTRY]' role='dimension' semantic-role='[Country].[ISO3166_2]' type='nominal' />
+      <column caption='Credit Limit' datatype='integer' name='[CREDIT_LIMIT]' role='measure' type='quantitative' />
+      <column caption='CURRENCY (DENORMALIZED TRANSACTIONS.csv)' datatype='string' name='[CURRENCY (DENORMALIZED_TRANSACTIONS.csv)]' role='dimension' type='nominal' />
+      <column caption='Currency' datatype='string' name='[CURRENCY]' role='dimension' type='nominal' />
+      <column caption='Customer Id' datatype='string' name='[CUSTOMER_ID]' role='dimension' type='nominal' />
+      <column caption='Customer Lifetime Value' datatype='integer' name='[CUSTOMER_LIFETIME_VALUE]' role='measure' type='quantitative' />
+      <column caption='Date' datatype='date' name='[DATE]' role='dimension' type='ordinal' />
+      <column caption='Full Name' datatype='string' name='[FULL_NAME]' role='dimension' type='nominal' />
+      <column caption='Gender' datatype='string' name='[GENDER]' role='dimension' type='nominal' />
+      <column caption='ID (DENORMALIZED TRANSACTIONS.csv)' datatype='string' name='[ID (DENORMALIZED_TRANSACTIONS.csv)]' role='dimension' type='nominal' />
+      <column caption='Is Fraud' datatype='integer' name='[IS_FRAUD]' role='measure' type='quantitative' />
+      <column caption='Merchant Category' datatype='string' name='[MERCHANT_CATEGORY]' role='dimension' type='nominal' />
+      <column caption='Ml Score' datatype='integer' name='[ML_SCORE]' role='measure' type='quantitative' />
+      <column caption='Open Date' datatype='date' name='[OPEN_DATE]' role='dimension' type='ordinal' />
+      <column caption='Status' datatype='string' name='[STATUS]' role='dimension' type='nominal' />
+      <column caption='Time' datatype='datetime' name='[TIME]' role='dimension' type='ordinal' />
+      <column caption='Transaction Usd Amount' datatype='real' name='[TRANSACTION_USD_AMOUNT]' role='measure' type='quantitative' />
+      <column caption='Type' datatype='string' name='[TYPE]' role='dimension' type='nominal' />
+      <column caption='Unprocessed Usd Fees' datatype='real' name='[UNPROCESSED_USD_FEES]' role='measure' type='quantitative' />
+      <column caption='ACCOUNTS.csv' datatype='table' name='[__tableau_internal_object_id__].[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]' role='measure' type='quantitative' />
+      <column caption='CUSTOMERS.csv' datatype='table' name='[__tableau_internal_object_id__].[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]' role='measure' type='quantitative' />
+      <column caption='DENORMALIZED_TRANSACTIONS.csv' datatype='table' name='[__tableau_internal_object_id__].[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]' role='measure' type='quantitative' />
+      <extract _.fcp.VConnDownstreamExtractsWithWarnings.true...user-specific='false' count='-1' enabled='true' object-id='' units='records'>
+        <connection access_mode='readonly' author-locale='en_US' class='hyper' dbname='C:/Users/VFRANC~1/AppData/Local/Temp/TableauTemp/#TableauTemp_1koxgk30vmkg3n11jljst1y4xwio.hyper' default-settings='hyper' schema='Extract' sslmode='' tablename='Extract' update-time='04/15/2026 09:13:57 PM' username='tableau_internal_user'>
+          <relation type='collection'>
+            <relation name='ACCOUNTS.csv_38410DA550944524B534EE83506B4471' table='[Extract].[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]' type='table' />
+            <relation name='CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA' table='[Extract].[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]' type='table' />
+            <relation name='DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283' table='[Extract].[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]' type='table' />
+          </relation>
+          <cols>
+            <map key='[ACCOUNT_ID]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[ACCOUNT_ID]' />
+            <map key='[AGE]' value='[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA].[AGE]' />
+            <map key='[BALANCE]' value='[ACCOUNTS.csv_38410DA550944524B534EE83506B4471].[BALANCE]' />
+            <map key='[CHANNEL]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[CHANNEL]' />
+            <map key='[COST_VARIATION_FACTOR]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[COST_VARIATION_FACTOR]' />
+            <map key='[COUNTRY (DENORMALIZED_TRANSACTIONS.csv)]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[COUNTRY]' />
+            <map key='[COUNTRY]' value='[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA].[COUNTRY]' />
+            <map key='[CREDIT_LIMIT]' value='[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA].[CREDIT_LIMIT]' />
+            <map key='[CURRENCY (DENORMALIZED_TRANSACTIONS.csv)]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[CURRENCY]' />
+            <map key='[CURRENCY]' value='[ACCOUNTS.csv_38410DA550944524B534EE83506B4471].[CURRENCY]' />
+            <map key='[CUSTOMER_ID]' value='[ACCOUNTS.csv_38410DA550944524B534EE83506B4471].[CUSTOMER_ID]' />
+            <map key='[CUSTOMER_LIFETIME_VALUE]' value='[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA].[CUSTOMER_LIFETIME_VALUE]' />
+            <map key='[DATE]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[DATE]' />
+            <map key='[FULL_NAME]' value='[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA].[FULL_NAME]' />
+            <map key='[GENDER]' value='[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA].[GENDER]' />
+            <map key='[ID (CUSTOMERS.csv)]' value='[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA].[ID]' />
+            <map key='[ID (DENORMALIZED_TRANSACTIONS.csv)]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[ID]' />
+            <map key='[ID]' value='[ACCOUNTS.csv_38410DA550944524B534EE83506B4471].[ID]' />
+            <map key='[IS_FRAUD]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[IS_FRAUD]' />
+            <map key='[MERCHANT_CATEGORY]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[MERCHANT_CATEGORY]' />
+            <map key='[ML_SCORE]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[ML_SCORE]' />
+            <map key='[OPEN_DATE]' value='[ACCOUNTS.csv_38410DA550944524B534EE83506B4471].[OPEN_DATE]' />
+            <map key='[STATUS]' value='[ACCOUNTS.csv_38410DA550944524B534EE83506B4471].[STATUS]' />
+            <map key='[TIME]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[TIME]' />
+            <map key='[TRANSACTION_USD_AMOUNT]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[TRANSACTION_USD_AMOUNT]' />
+            <map key='[TYPE]' value='[ACCOUNTS.csv_38410DA550944524B534EE83506B4471].[TYPE]' />
+            <map key='[UNPROCESSED_USD_FEES]' value='[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283].[UNPROCESSED_USD_FEES]' />
+          </cols>
+          <metadata-records>
+            <metadata-record class='column'>
+              <remote-name>ID</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[ID]</local-name>
+              <parent-name>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</parent-name>
+              <remote-alias>ID</remote-alias>
+              <ordinal>0</ordinal>
+              <family>ACCOUNTS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>19500</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>CUSTOMER_ID</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[CUSTOMER_ID]</local-name>
+              <parent-name>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</parent-name>
+              <remote-alias>CUSTOMER_ID</remote-alias>
+              <ordinal>1</ordinal>
+              <family>ACCOUNTS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>7214</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>TYPE</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[TYPE]</local-name>
+              <parent-name>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</parent-name>
+              <remote-alias>TYPE</remote-alias>
+              <ordinal>2</ordinal>
+              <family>ACCOUNTS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>5</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>CURRENCY</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[CURRENCY]</local-name>
+              <parent-name>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</parent-name>
+              <remote-alias>CURRENCY</remote-alias>
+              <ordinal>3</ordinal>
+              <family>ACCOUNTS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>5</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>BALANCE</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[BALANCE]</local-name>
+              <parent-name>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</parent-name>
+              <remote-alias>BALANCE</remote-alias>
+              <ordinal>4</ordinal>
+              <family>ACCOUNTS.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>15342</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>OPEN_DATE</remote-name>
+              <remote-type>133</remote-type>
+              <local-name>[OPEN_DATE]</local-name>
+              <parent-name>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</parent-name>
+              <remote-alias>OPEN_DATE</remote-alias>
+              <ordinal>5</ordinal>
+              <family>ACCOUNTS.csv</family>
+              <local-type>date</local-type>
+              <aggregation>Year</aggregation>
+              <approx-count>4823</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>STATUS</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[STATUS]</local-name>
+              <parent-name>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</parent-name>
+              <remote-alias>STATUS</remote-alias>
+              <ordinal>6</ordinal>
+              <family>ACCOUNTS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>3</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>ID</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[ID (CUSTOMERS.csv)]</local-name>
+              <parent-name>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</parent-name>
+              <remote-alias>ID</remote-alias>
+              <ordinal>7</ordinal>
+              <family>CUSTOMERS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>15960</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>FULL_NAME</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[FULL_NAME]</local-name>
+              <parent-name>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</parent-name>
+              <remote-alias>FULL_NAME</remote-alias>
+              <ordinal>8</ordinal>
+              <family>CUSTOMERS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2754</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>AGE</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[AGE]</local-name>
+              <parent-name>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</parent-name>
+              <remote-alias>AGE</remote-alias>
+              <ordinal>9</ordinal>
+              <family>CUSTOMERS.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>69</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>GENDER</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[GENDER]</local-name>
+              <parent-name>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</parent-name>
+              <remote-alias>GENDER</remote-alias>
+              <ordinal>10</ordinal>
+              <family>CUSTOMERS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>3</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>COUNTRY</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[COUNTRY]</local-name>
+              <parent-name>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</parent-name>
+              <remote-alias>COUNTRY</remote-alias>
+              <ordinal>11</ordinal>
+              <family>CUSTOMERS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>15</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>CREDIT_LIMIT</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[CREDIT_LIMIT]</local-name>
+              <parent-name>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</parent-name>
+              <remote-alias>CREDIT_LIMIT</remote-alias>
+              <ordinal>12</ordinal>
+              <family>CUSTOMERS.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>4182</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>CUSTOMER_LIFETIME_VALUE</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[CUSTOMER_LIFETIME_VALUE]</local-name>
+              <parent-name>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</parent-name>
+              <remote-alias>CUSTOMER_LIFETIME_VALUE</remote-alias>
+              <ordinal>13</ordinal>
+              <family>CUSTOMERS.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>10378</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>ID</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[ID (DENORMALIZED_TRANSACTIONS.csv)]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>ID</remote-alias>
+              <ordinal>14</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>50128</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>ACCOUNT_ID</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[ACCOUNT_ID]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>ACCOUNT_ID</remote-alias>
+              <ordinal>15</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>15597</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>DATE</remote-name>
+              <remote-type>133</remote-type>
+              <local-name>[DATE]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>DATE</remote-alias>
+              <ordinal>16</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>date</local-type>
+              <aggregation>Year</aggregation>
+              <approx-count>4059</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>TIME</remote-name>
+              <remote-type>134</remote-type>
+              <local-name>[TIME]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>TIME</remote-alias>
+              <ordinal>17</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>datetime</local-type>
+              <aggregation>Hour</aggregation>
+              <approx-count>30112</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>CURRENCY</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[CURRENCY (DENORMALIZED_TRANSACTIONS.csv)]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>CURRENCY</remote-alias>
+              <ordinal>18</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>5</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>UNPROCESSED_USD_FEES</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[UNPROCESSED_USD_FEES]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>UNPROCESSED_USD_FEES</remote-alias>
+              <ordinal>19</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>42628</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>TRANSACTION_USD_AMOUNT</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[TRANSACTION_USD_AMOUNT]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>TRANSACTION_USD_AMOUNT</remote-alias>
+              <ordinal>20</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>42628</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>MERCHANT_CATEGORY</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[MERCHANT_CATEGORY]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>MERCHANT_CATEGORY</remote-alias>
+              <ordinal>21</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>11</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>CHANNEL</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[CHANNEL]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>CHANNEL</remote-alias>
+              <ordinal>22</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>9</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>COUNTRY</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[COUNTRY (DENORMALIZED_TRANSACTIONS.csv)]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>COUNTRY</remote-alias>
+              <ordinal>23</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>15</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>COST_VARIATION_FACTOR</remote-name>
+              <remote-type>5</remote-type>
+              <local-name>[COST_VARIATION_FACTOR]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>COST_VARIATION_FACTOR</remote-alias>
+              <ordinal>24</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>real</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>50128</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>ML_SCORE</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[ML_SCORE]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>ML_SCORE</remote-alias>
+              <ordinal>25</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>2087</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>IS_FRAUD</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[IS_FRAUD]</local-name>
+              <parent-name>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</parent-name>
+              <remote-alias>IS_FRAUD</remote-alias>
+              <ordinal>26</ordinal>
+              <family>DENORMALIZED_TRANSACTIONS.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]</object-id>
+            </metadata-record>
+          </metadata-records>
+        </connection>
+      </extract>
+      <layout dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+      <object-graph>
+        <objects>
+          <object caption='ACCOUNTS.csv' id='ACCOUNTS.csv_38410DA550944524B534EE83506B4471'>
+            <properties context=''>
+              <relation connection='textscan.1d1awin0sht0iw1chg5cu1vkj9wv' name='ACCOUNTS.csv' table='[ACCOUNTS#csv]' type='table'>
+                <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+                  <column datatype='string' name='ID' ordinal='0' />
+                  <column datatype='string' name='CUSTOMER_ID' ordinal='1' />
+                  <column datatype='string' name='TYPE' ordinal='2' />
+                  <column datatype='string' name='CURRENCY' ordinal='3' />
+                  <column datatype='real' name='BALANCE' ordinal='4' />
+                  <column datatype='date' name='OPEN_DATE' ordinal='5' />
+                  <column datatype='string' name='STATUS' ordinal='6' />
+                </columns>
+              </relation>
+            </properties>
+            <properties context='extract'>
+              <relation name='ACCOUNTS.csv_38410DA550944524B534EE83506B4471' table='[Extract].[ACCOUNTS.csv_38410DA550944524B534EE83506B4471]' type='table' />
+            </properties>
+          </object>
+          <object caption='CUSTOMERS.csv' id='CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA'>
+            <properties context=''>
+              <relation connection='textscan.1d1awin0sht0iw1chg5cu1vkj9wv' name='CUSTOMERS.csv' table='[CUSTOMERS#csv]' type='table'>
+                <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+                  <column datatype='string' name='ID' ordinal='0' />
+                  <column datatype='string' name='FULL_NAME' ordinal='1' />
+                  <column datatype='integer' name='AGE' ordinal='2' />
+                  <column datatype='string' name='GENDER' ordinal='3' />
+                  <column datatype='string' name='COUNTRY' ordinal='4' />
+                  <column datatype='integer' name='CREDIT_LIMIT' ordinal='5' />
+                  <column datatype='integer' name='CUSTOMER_LIFETIME_VALUE' ordinal='6' />
+                </columns>
+              </relation>
+            </properties>
+            <properties context='extract'>
+              <relation name='CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA' table='[Extract].[CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA]' type='table' />
+            </properties>
+          </object>
+          <object caption='DENORMALIZED_TRANSACTIONS.csv' id='DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283'>
+            <properties context=''>
+              <relation connection='textscan.1u1nvgg0wv5zed1fp8r9s05vwuru' name='DENORMALIZED_TRANSACTIONS.csv' table='[DENORMALIZED_TRANSACTIONS#csv]' type='table'>
+                <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+                  <column datatype='string' name='ID' ordinal='0' />
+                  <column datatype='string' name='ACCOUNT_ID' ordinal='1' />
+                  <column datatype='date' name='DATE' ordinal='2' />
+                  <column datatype='datetime' name='TIME' ordinal='3' />
+                  <column datatype='string' name='CURRENCY' ordinal='4' />
+                  <column datatype='real' name='UNPROCESSED_USD_FEES' ordinal='5' />
+                  <column datatype='real' name='TRANSACTION_USD_AMOUNT' ordinal='6' />
+                  <column datatype='string' name='MERCHANT_CATEGORY' ordinal='7' />
+                  <column datatype='string' name='CHANNEL' ordinal='8' />
+                  <column datatype='string' name='COUNTRY' ordinal='9' />
+                  <column datatype='real' name='COST_VARIATION_FACTOR' ordinal='10' />
+                  <column datatype='integer' name='ML_SCORE' ordinal='11' />
+                  <column datatype='integer' name='IS_FRAUD' ordinal='12' />
+                </columns>
+              </relation>
+            </properties>
+            <properties context='extract'>
+              <relation name='DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283' table='[Extract].[DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283]' type='table' />
+            </properties>
+          </object>
+        </objects>
+        <relationships>
+          <relationship>
+            <expression op='='>
+              <expression op='[ID]' />
+              <expression op='[ID (CUSTOMERS.csv)]' />
+            </expression>
+            <first-end-point object-id='ACCOUNTS.csv_38410DA550944524B534EE83506B4471' />
+            <second-end-point object-id='CUSTOMERS.csv_2B3C44ADFE294531AD53769226C597CA' />
+          </relationship>
+          <relationship>
+            <expression op='='>
+              <expression op='[ID]' />
+              <expression op='[ACCOUNT_ID]' />
+            </expression>
+            <first-end-point object-id='ACCOUNTS.csv_38410DA550944524B534EE83506B4471' />
+            <second-end-point object-id='DENORMALIZED_TRANSACTIONS.csv_74C5EBF041F8488992C70DEA59A5D283' />
+          </relationship>
+        </relationships>
+      </object-graph>
+    </datasource>
+  </datasources>
+  <actions>
+    <edit-parameter-action caption='Parameter1' name='[Action1_1DA06B5692B643F883A7326F52E82FA9]'>
+      <activation type='on-select' />
+      <source type='sheet' worksheet='FRAUD_OVER_MONTHS' />
+      <agg-type type='max' />
+      <clear-option type='assign-fixed-value' value='c:2026-02-12 04:58:31.432' />
+      <params>
+        <param name='source-field' value='[federated.07dcy720vktba51h64gki1mz3cbc].[tmn:DATE:qk]' />
+        <param name='target-parameter' value='[Parameters].[AxisEnd]' />
+      </params>
+    </edit-parameter-action>
+    <edit-parameter-action caption='Parameter1 1' name='[Action2_DDF388B0EA664F789229B24A08C016BF]'>
+      <activation type='on-select' />
+      <source type='sheet' worksheet='FRAUD_OVER_MONTHS (2)' />
+      <agg-type type='max' />
+      <clear-option type='assign-fixed-value' value='c:2026-02-12 04:58:31.432' />
+      <params>
+        <param name='source-field' value='[federated.07dcy720vktba51h64gki1mz3cbc].[tmn:DATE:qk]' />
+        <param name='target-parameter' value='[Parameters].[AxisEnd]' />
+      </params>
+    </edit-parameter-action>
+  </actions>
+  <worksheets>
+    <worksheet name='FRAUD_OVER_MONTHS'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run bold='true' fontalignment='1' fontcolor='#028895' fontsize='20'>Fraud cases spike around November, December and January months mainly because of holiday expenses</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='ACCOUNTS.csv+ (Multiple Connections)' name='federated.07dcy720vktba51h64gki1mz3cbc' />
+          </datasources>
+          <datasource-dependencies datasource='federated.07dcy720vktba51h64gki1mz3cbc'>
+            <column caption='Date' datatype='date' name='[DATE]' role='dimension' type='ordinal' />
+            <column caption='Is Fraud' datatype='integer' name='[IS_FRAUD]' role='measure' type='quantitative' />
+            <column-instance column='[IS_FRAUD]' derivation='Sum' name='[sum:IS_FRAUD:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[DATE]' derivation='Month-Trunc' name='[tmn:DATE:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <encoding attr='space' class='0' domain-expand='false' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' field-type='quantitative' major-origin='0' major-spacing='10' max='68' min='1' range-type='fixed' scope='rows' type='space' />
+            <format attr='title' class='0' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' scope='rows' value='Fraud quantity' />
+            <encoding attr='space' class='0' field='[federated.07dcy720vktba51h64gki1mz3cbc].[tmn:DATE:qk]' field-type='quantitative' major-origin='#2024-01-18 09:58:18.315#' major-spacing='1.0' major-units='years' max='#2025-12-31 00:00:00#' min='#2021-10-19 19:01:28.567#' range-type='fixed' scope='cols' type='space' />
+            <format attr='title' class='0' field='[federated.07dcy720vktba51h64gki1mz3cbc].[tmn:DATE:qk]' scope='cols' value='' />
+            <format attr='tick-color' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='#028895' />
+          </style-rule>
+          <style-rule element='cell'>
+            <format attr='cell-w' value='54' />
+            <format attr='cell-h' value='18' />
+            <format attr='cell' value='18' />
+            <format attr='cell-q' value='90' />
+            <format attr='font-size' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='15' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='font-size' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='15' />
+            <format attr='color' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='#028895' />
+            <format attr='font-weight' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='bold' />
+            <format attr='color' field='[federated.07dcy720vktba51h64gki1mz3cbc].[tmn:DATE:qk]' value='#028895' />
+            <format attr='font-size' field='[federated.07dcy720vktba51h64gki1mz3cbc].[tmn:DATE:qk]' value='15' />
+            <format attr='font-weight' field='[federated.07dcy720vktba51h64gki1mz3cbc].[tmn:DATE:qk]' value='bold' />
+          </style-rule>
+          <style-rule element='pane'>
+            <format attr='border-width' data-class='total' value='0' />
+            <format attr='border-style' data-class='total' value='none' />
+          </style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-pattern-only' value='solid' />
+            <format attr='stroke-size' value='0' />
+            <format attr='line-visibility' value='off' />
+          </style-rule>
+          <style-rule element='axis-title'>
+            <format attr='font-size' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='15' />
+            <format attr='color' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='#028895' />
+            <format attr='font-weight' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='bold' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-color' value='#028895' />
+                <format attr='mark-markers-mode' value='auto' />
+                <format attr='size' value='1' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]</rows>
+        <cols>[federated.07dcy720vktba51h64gki1mz3cbc].[tmn:DATE:qk]</cols>
+      </table>
+      <simple-id uuid='{658ABF3E-805D-4188-A296-3AA147F37AF9}' />
+    </worksheet>
+    <worksheet name='FRAUD_OVER_MONTHS (2)'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run bold='true' fontalignment='1' fontcolor='#028895' fontsize='20'>Fraud cases spike around November, December and January months mainly because of holiday expenses</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='ACCOUNTS.csv+ (Multiple Connections)' name='federated.07dcy720vktba51h64gki1mz3cbc' />
+          </datasources>
+          <datasource-dependencies datasource='federated.07dcy720vktba51h64gki1mz3cbc'>
+            <column caption='Date' datatype='date' name='[DATE]' role='dimension' type='ordinal' />
+            <column caption='Is Fraud' datatype='integer' name='[IS_FRAUD]' role='measure' type='quantitative' />
+            <column-instance column='[DATE]' derivation='Month' name='[mn:DATE:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[IS_FRAUD]' derivation='Sum' name='[sum:IS_FRAUD:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <encoding attr='space' class='0' domain-expand='false' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' field-type='quantitative' major-origin='0' major-spacing='10' scope='rows' type='space' />
+            <format attr='title' class='0' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' scope='rows' value='Fraud quantity' />
+            <format attr='tick-color' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='#028895' />
+            <format attr='title' class='0' field='[federated.07dcy720vktba51h64gki1mz3cbc].[mn:DATE:ok]' scope='cols' value='' />
+            <format attr='width' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='268' />
+          </style-rule>
+          <style-rule element='cell'>
+            <format attr='cell-w' value='54' />
+            <format attr='cell-h' value='18' />
+            <format attr='cell' value='18' />
+            <format attr='cell-q' value='90' />
+            <format attr='font-size' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='15' />
+            <format attr='width' field='[federated.07dcy720vktba51h64gki1mz3cbc].[mn:DATE:ok]' value='113' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='font-size' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='15' />
+            <format attr='color' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='#028895' />
+            <format attr='font-weight' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='bold' />
+            <format attr='color' field='[federated.07dcy720vktba51h64gki1mz3cbc].[mn:DATE:ok]' value='#028895' />
+            <format attr='font-size' field='[federated.07dcy720vktba51h64gki1mz3cbc].[mn:DATE:ok]' value='15' />
+            <format attr='font-weight' field='[federated.07dcy720vktba51h64gki1mz3cbc].[mn:DATE:ok]' value='bold' />
+          </style-rule>
+          <style-rule element='pane'>
+            <format attr='border-width' data-class='total' value='0' />
+            <format attr='border-style' data-class='total' value='none' />
+          </style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-pattern-only' value='solid' />
+            <format attr='stroke-size' value='0' />
+            <format attr='line-visibility' value='off' />
+          </style-rule>
+          <style-rule element='axis-title'>
+            <format attr='font-size' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='15' />
+            <format attr='color' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='#028895' />
+            <format attr='font-weight' field='[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]' value='bold' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-color' value='#028895' />
+                <format attr='mark-markers-mode' value='auto' />
+                <format attr='size' value='1' />
+              </style-rule>
+              <style-rule element='pane'>
+                <format attr='minwidth' value='-1' />
+                <format attr='maxwidth' value='-1' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]</rows>
+        <cols>[federated.07dcy720vktba51h64gki1mz3cbc].[mn:DATE:ok]</cols>
+      </table>
+      <simple-id uuid='{A5AF8F52-23E5-4CB5-A15C-3B734993CB45}' />
+    </worksheet>
+    <worksheet name='Sheet 3'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='ACCOUNTS.csv+ (Multiple Connections)' name='federated.07dcy720vktba51h64gki1mz3cbc' />
+          </datasources>
+          <datasource-dependencies datasource='federated.07dcy720vktba51h64gki1mz3cbc'>
+            <column caption='Date' datatype='date' name='[DATE]' role='dimension' type='ordinal' />
+            <column caption='Is Fraud' datatype='integer' name='[IS_FRAUD]' role='measure' type='quantitative' />
+            <column-instance column='[DATE]' derivation='Month' name='[mn:DATE:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[IS_FRAUD]' derivation='Sum' name='[sum:IS_FRAUD:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+          </pane>
+        </panes>
+        <rows>[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]</rows>
+        <cols>[federated.07dcy720vktba51h64gki1mz3cbc].[mn:DATE:ok]</cols>
+      </table>
+      <simple-id uuid='{A59AB3C6-1EB0-41BB-9B33-3D923844573F}' />
+    </worksheet>
+  </worksheets>
+  <windows saved-dpi-scale-factor='1.25' source-height='37'>
+    <window class='worksheet' name='FRAUD_OVER_MONTHS'>
+      <cards>
+        <edge name='left'>
+          <strip size='124'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='37'>
+            <card type='columns' />
+          </strip>
+          <strip size='37'>
+            <card type='rows' />
+          </strip>
+          <strip size='37'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <simple-id uuid='{85765592-FAB2-496D-8BBC-4655BFEB9BB3}' />
+    </window>
+    <window class='worksheet' name='FRAUD_OVER_MONTHS (2)'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <selection-collection>
+          <node-selection select-tuples='false'>
+            <oriented-node-reference orientation='vertical'>
+              <node-reference>
+                <axis>[federated.07dcy720vktba51h64gki1mz3cbc].[sum:IS_FRAUD:qk]</axis>
+              </node-reference>
+              <page-reference />
+            </oriented-node-reference>
+          </node-selection>
+        </selection-collection>
+      </viewpoint>
+      <simple-id uuid='{A7C3DCC5-6DAB-48E3-AC66-14AACE149F2B}' />
+    </window>
+    <window class='worksheet' maximized='true' name='Sheet 3'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.07dcy720vktba51h64gki1mz3cbc].[yr:DATE:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{93AFE7FE-39AE-4676-8CE4-711A05CB0AF8}' />
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='FRAUD_OVER_MONTHS' width='192'>
+      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
+      RU5ErkJggg==
+    </thumbnail>
+    <thumbnail height='192' name='FRAUD_OVER_MONTHS (2)' width='192'>
+      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
+      xHyBeD5/AAAAAElFTkSuQmCC
+    </thumbnail>
+    <thumbnail height='192' name='Sheet 3' width='192'>
+      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
+    </thumbnail>
+  </thumbnails>
+</workbook>
