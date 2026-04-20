@@ -1,6 +1,7 @@
 from project.ANALYSIS.analyze_transactions_data import joined_tables_for_analysis
 import duckdb
 import math
+import pandas as pd
 
 LAPLACE_SMOOTHING = 0.5
 
@@ -64,13 +65,18 @@ def get_IV_for_columns():
 		'UNPROCESSED_USD_FEES',
 		'TRANSACTION_USD_AMOUNT',
 		'FULL_NAME',
-		'STATUS'
+		'STATUS',
+		'AGE',
+		'BALANCE',
+		'OPEN_DATE',
+		'CUSTOMER_LIFETIME_VALUE',
+		'CREDIT_LIMIT'
 	]
 
 	special_grouping_columns = [
 		{
-			'name': 'MONTH (FROM DATE)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/MONTH.sql'
+			'name': 'TRANSACTION_MONTH (FROM DATE)',
+			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/TRANSACTION_MONTH.sql'
 		},
 		{
 			'name': 'HOUR (FROM DATE)',
@@ -80,6 +86,26 @@ def get_IV_for_columns():
 			'name': 'TRANSACTION_USD_AMOUNT (BUCKETED 2000 GROUPS)',
 			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/TRANSACTION_USD_AMOUNT.sql'
 		},
+		{
+			'name': 'AGE (bucketed 10 year range)',
+			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/AGE.sql'
+		},
+		{
+			'name': 'BALANCE (bucketed 5000 range)',
+			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/BALANCE.sql'
+		},
+		{
+			'name': 'OPEN_DATE_MONTH (FROM OPEN_DATE)',
+			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/OPEN_DATE_MONTH.sql'
+		},
+		{
+			'name': 'CUSTOMER_LIFETIME_VALUE (custom bucketing)',
+			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/CUSTOMER_LIFETIME_VALUE.sql'
+		},
+		{
+			'name': 'CREDIT_LIMIT (custom bucketing)',
+			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/CREDIT_LIMIT.sql'
+		}
 	]
 
 	for column in joined_tables_for_analysis.columns:
@@ -103,5 +129,7 @@ def get_IV_for_columns():
 	for column_IV in column_IVs:
 		print(f'{column_IV['column']}, IV: {column_IV['IV']}, Discrete values quantity: {column_IV['discrete_values_quantity']}')
 
-get_IV_for_columns()
+	return pd.DataFrame(column_IVs)
+
+print(get_IV_for_columns().to_string(index=False))
 #print(joined_tables_for_analysis['STATUS'].drop_duplicates())
