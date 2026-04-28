@@ -5,6 +5,7 @@ import yfinance as yf
 import pandas as pd
 from datetime import date, timedelta
 from pathlib import Path
+from project.ANALYSIS.analyze_transactions_data import joined_tables_for_analysis
 
 def generate_exchange_rate(forex_pair):
 	start_date = date(2022, 1, 1)

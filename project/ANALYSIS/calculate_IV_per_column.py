@@ -2,23 +2,37 @@ from project.ANALYSIS.analyze_transactions_data import joined_tables_for_analysi
 import duckdb
 import math
 import pandas as pd
+from pathlib import Path
+from itertools import combinations
+import multiprocessing as mp
 
 LAPLACE_SMOOTHING = 0.5
 
-total_fraud, total_transactions = duckdb.sql('SELECT SUM(IS_FRAUD), COUNT(*) FROM joined_tables_for_analysis').fetchone()
+transaction_totals_query = open('project/SQL/TRANSACTION_TOTALS.sql', 'r').read()
+
+total_fraud, total_transactions = duckdb.sql(transaction_totals_query).fetchone()
 
 total_non_fraud = total_transactions - total_fraud
 
-def get_default_bucket_query(column):
-	return f'''
+analysis_buckets_directory = Path('project/SQL/BUCKETS/ANALYSIS_BUCKETS')
+
+def get_columns_bucket_query(column_list):
+	name = ''
+
+	name = 'x'.join(map(lambda x: x['name'], column_list))
+
+	return len(column_list), name, f'''
+		WITH
+			{','.join(map(lambda x: f'BUCKET{x[0] + 1} AS({x[1]['query']})', enumerate(column_list)))}
 		SELECT
-			{column}		AS '{column}',
-			SUM(IS_FRAUD)	AS IS_FRAUD_QUANTITY,
-			COUNT(*)		AS TRANSACTION_QUANTITY
+			{','.join(map(lambda x: f'BUCKET{x[0] + 1}.BUCKET', enumerate(column_list)))},
+			SUM(JTA.IS_FRAUD)	AS IS_FRAUD_QUANTITY,
+			COUNT(*)			AS TRANSACTION_QUANTITY
 		FROM
-			joined_tables_for_analysis
+			joined_tables_for_analysis	JTA
+			{' '.join(map(lambda x: f'INNER JOIN BUCKET{x[0] + 1} ON JTA.ID = BUCKET{x[0] + 1}.ID', enumerate(column_list)))}
 		GROUP BY
-			{column};
+			{','.join(map(lambda x: f'BUCKET{x[0] + 1}.BUCKET', enumerate(column_list)))};
 	'''
 
 def calculate_weight_of_evidence_and_percents(is_fraud_quantity, transaction_quantity):
@@ -32,14 +46,12 @@ def calculate_weight_of_evidence_and_percents(is_fraud_quantity, transaction_qua
 
 	return WoE, percent_fraud, percent_non_fraud
 
-def get_IV_for_column(bucket_query):
+def get_IV_for_column(bucket_df):
 	information_value = 0
 
 	discrete_values_quantity = 0
 
-	categories_df = duckdb.sql(bucket_query).df()
-
-	for index, row in categories_df.iterrows():
+	for index, row in bucket_df.iterrows():
 		WoE, percent_fraud, percent_non_fraud = calculate_weight_of_evidence_and_percents(row['IS_FRAUD_QUANTITY'], row['TRANSACTION_QUANTITY'])
 
 		diff = percent_fraud - percent_non_fraud
@@ -50,86 +62,45 @@ def get_IV_for_column(bucket_query):
 
 	return information_value, discrete_values_quantity
 
-def get_IV_for_columns():
-	column_IVs = []
-
-	columns_to_skip = [
-		'IS_FRAUD',
-		'FLAGGED',
-		'DATE',
-		'TIME',
-		'ML_SCORE',
-		'ML_PROBABILITY',
-		'COST_VARIATION_FACTOR',
-		'ID',
-		'UNPROCESSED_USD_FEES',
-		'TRANSACTION_USD_AMOUNT',
-		'FULL_NAME',
-		'STATUS',
-		'AGE',
-		'BALANCE',
-		'OPEN_DATE',
-		'CUSTOMER_LIFETIME_VALUE',
-		'CREDIT_LIMIT'
-	]
-
-	special_grouping_columns = [
-		{
-			'name': 'TRANSACTION_MONTH (FROM DATE)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/TRANSACTION_MONTH.sql'
-		},
-		{
-			'name': 'HOUR (FROM DATE)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/HOUR.sql'
-		},
-		{
-			'name': 'TRANSACTION_USD_AMOUNT (BUCKETED 2000 GROUPS)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/TRANSACTION_USD_AMOUNT.sql'
-		},
-		{
-			'name': 'AGE (bucketed 10 year range)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/AGE.sql'
-		},
-		{
-			'name': 'BALANCE (bucketed 5000 range)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/BALANCE.sql'
-		},
-		{
-			'name': 'OPEN_DATE_MONTH (FROM OPEN_DATE)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/OPEN_DATE_MONTH.sql'
-		},
-		{
-			'name': 'CUSTOMER_LIFETIME_VALUE (custom bucketing)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/CUSTOMER_LIFETIME_VALUE.sql'
-		},
-		{
-			'name': 'CREDIT_LIMIT (custom bucketing)',
-			'sql_file': 'project/SQL/BUCKETS/ANALYSIS_BUCKETS/CREDIT_LIMIT.sql'
-		}
-	]
-
-	for column in joined_tables_for_analysis.columns:
-		if column in columns_to_skip: continue
-
-		bucket_query = get_default_bucket_query(column)
-
-		iv, discrete_values_quantity = get_IV_for_column(bucket_query)
-
-		column_IVs.append({'column': column, 'IV': iv, 'discrete_values_quantity': discrete_values_quantity})
+def process_parameter(parameter):
+	parameter = list(parameter)
 	
-	for column in special_grouping_columns:
-		bucket_query = open(column['sql_file'], 'r').read()
+	column_quantity, bucket_name_final, bucket_query_final = get_columns_bucket_query(parameter)
 
-		iv, discrete_values_quantity = get_IV_for_column(bucket_query)
+	bucket_df = duckdb.sql(bucket_query_final).df()
 
-		column_IVs.append({'column': column['name'], 'IV': iv, 'discrete_values_quantity': discrete_values_quantity})
+	iv, discrete_values_quantity = get_IV_for_column(bucket_df)
 
+	return {'COLUMN_QUANTITY':column_quantity, 'NAME': bucket_name_final,'IV': iv, 'DISCRETE_VALUES_QUANTITY': discrete_values_quantity}
+
+def get_IV_for_columns_df(col_combination_quantity):
+	column_IVs = []
+	bucket_queries = []
+	parameters = []
+
+	for file_path in analysis_buckets_directory.iterdir():
+		sql_query = open(file_path, 'r').read()
+
+		bucket_queries.append({'name': file_path.stem,'query': sql_query})
+
+	for i in range(col_combination_quantity):
+		parameters += list(combinations(bucket_queries, i + 1))
+
+	with mp.Pool(mp.cpu_count()) as pool:
+		column_IVs = list(pool.map(process_parameter, parameters))
+		
+	# for parameter in parameters:
+	# 	parameter = list(parameter)
+		
+	# 	column_quantity, bucket_name_final, bucket_query_final = get_columns_bucket_query(parameter)
+
+	# 	bucket_df = duckdb.sql(bucket_query_final).df()
+
+	# 	iv, discrete_values_quantity = get_IV_for_column(bucket_df)
+
+	# 	column_IVs.append({'COLUMN_QUANTITY':column_quantity, 'NAME': bucket_name_final,'IV': iv, 'DISCRETE_VALUES_QUANTITY': discrete_values_quantity})
+
+	#print(column_IVs)
 	column_IVs.sort(key=lambda x: x['IV'], reverse=True)
 
-	for column_IV in column_IVs:
-		print(f'{column_IV['column']}, IV: {column_IV['IV']}, Discrete values quantity: {column_IV['discrete_values_quantity']}')
-
 	return pd.DataFrame(column_IVs)
-
-print(get_IV_for_columns().to_string(index=False))
-#print(joined_tables_for_analysis['STATUS'].drop_duplicates())

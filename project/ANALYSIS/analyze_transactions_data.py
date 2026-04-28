@@ -7,23 +7,23 @@ import math
 import multiprocessing as mp
 import time
 from pathlib import Path
-from project.utils import generate_csv_file_from_sql
+from project.utils import generate_csv_file_from_df
 
 joined_tables_for_analysis = duckdb.sql(open('project/SQL/JOIN_ALL_TABLES_FOR_ANALYSIS.sql', 'r').read()).df()
 
 column_order = [
-		'FRAUD_ANALYSIS_ID',
-		'THRESHOLD',
-		'FALSE_POSITIVE_RATE',
-		'GRAND_TOTAL',
-		'FRAUD_DETECTION_RATE',
-		'PRECISION',
-		'ACCURACY',
-		'TOTAL_USD_FEES',
-		'TOTAL_FRAUD_LOSS',
-		'TOTAL_INVESTIGATION_COST',
-		'TOTAL_CUSTOMER_SUPPORT_COST',
-		'TOTAL_LOST_INTERCHANGE'
+	'FRAUD_ANALYSIS_ID',
+	'THRESHOLD',
+	'FALSE_POSITIVE_RATE',
+	'GRAND_TOTAL',
+	'FRAUD_DETECTION_RATE',
+	'PRECISION',
+	'ACCURACY',
+	'TOTAL_USD_FEES',
+	'TOTAL_FRAUD_LOSS',
+	'TOTAL_INVESTIGATION_COST',
+	'TOTAL_CUSTOMER_SUPPORT_COST',
+	'TOTAL_LOST_INTERCHANGE'
 ]
 
 weight_columns = []
