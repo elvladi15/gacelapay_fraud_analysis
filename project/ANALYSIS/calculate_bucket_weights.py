@@ -8,7 +8,7 @@ def get_bucket_weights(sql_file):
 
 	for row in buckets_df.itertuples():
 		buckets_df.at[row.Index, 'WOE'] = calculate_weight_of_evidence_and_percents(buckets_df.at[row.Index, 'IS_FRAUD_QUANTITY'], buckets_df.at[row.Index, 'TRANSACTION_QUANTITY'])[0]
-	
+
 	return buckets_df
 
 print(get_bucket_weights('project/SQL/BUCKETS/WEIGHT_CALCULATION_BUCKETS/MONTH.sql'))

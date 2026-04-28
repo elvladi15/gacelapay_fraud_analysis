@@ -64,7 +64,7 @@ def get_IV_for_column(bucket_df):
 
 def process_parameter(parameter):
 	parameter = list(parameter)
-	
+
 	column_quantity, bucket_name_final, bucket_query_final = get_columns_bucket_query(parameter)
 
 	bucket_df = duckdb.sql(bucket_query_final).df()
@@ -88,19 +88,7 @@ def get_IV_for_columns_df(col_combination_quantity):
 
 	with mp.Pool(mp.cpu_count()) as pool:
 		column_IVs = list(pool.map(process_parameter, parameters))
-		
-	# for parameter in parameters:
-	# 	parameter = list(parameter)
-		
-	# 	column_quantity, bucket_name_final, bucket_query_final = get_columns_bucket_query(parameter)
 
-	# 	bucket_df = duckdb.sql(bucket_query_final).df()
-
-	# 	iv, discrete_values_quantity = get_IV_for_column(bucket_df)
-
-	# 	column_IVs.append({'COLUMN_QUANTITY':column_quantity, 'NAME': bucket_name_final,'IV': iv, 'DISCRETE_VALUES_QUANTITY': discrete_values_quantity})
-
-	#print(column_IVs)
 	column_IVs.sort(key=lambda x: x['IV'], reverse=True)
 
 	return pd.DataFrame(column_IVs)
