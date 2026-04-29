@@ -2,7 +2,7 @@ from project.utils import generate_df_from_sql, generate_csv_file_from_df
 from project.ANALYSIS.analyze_transactions_data import Runner, get_test_cases, compare_test_cases
 from project.ANALYSIS.calculate_IV_per_column import get_IV_for_columns_df
 
-if not __name__ == '__main__':
+if __name__ == '__main__':
 	#STEP 1: CLEAN DATASETS
 
 	df = generate_df_from_sql('project/SQL/DATA_CLEANING/CLEAN_EXCHANGE_RATES.sql')
