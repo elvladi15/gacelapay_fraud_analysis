@@ -104,7 +104,7 @@ def get_IV_for_columns_df(col_combination_quantity):
 	return pd.DataFrame(column_IVs)
 
 def get_combined_column_stats_df(df):
-	df_object = []
+	df_object_list = []
 	
 	for index, row in df.iterrows():
 
@@ -122,21 +122,27 @@ def get_combined_column_stats_df(df):
 						'iv': curr_row['iv']
 					})
 
-		combined_iv = row['iv']
+		row_object_dict = {}
 
-		individual_ivs = ','.join(map(lambda x: str(x['iv']), column_details))
+		combined_iv = row['iv']
 
 		individual_ivs_sum = sum(map(lambda x: float(x['iv']), column_details))
 
-		df_object.append({
-			'columns': ','.join(map(lambda x: str(x['name']), column_details)),
-			'discrete_values_quantity': row['discrete_values_quantity'],
-			'combined_iv': combined_iv,
-			'individual_ivs': individual_ivs,
-			'is_combined_iv_higher': combined_iv > individual_ivs_sum
-		})
+		for index, item in enumerate(column_details):
+			row_object_dict[f'column_{index + 1}'] = item['name']
 
-	return pd.DataFrame(df_object)
+		row_object_dict['discrete_values_quantity'] = row['discrete_values_quantity']
+
+		row_object_dict['combined_iv'] = combined_iv
+
+		for index, item in enumerate(column_details):
+			row_object_dict[f'iv_{index + 1}'] = item['iv']
+		
+		row_object_dict['is_combined_iv_higher'] = combined_iv > individual_ivs_sum
+
+		df_object_list.append(row_object_dict)
+
+	return pd.DataFrame(df_object_list)
 	
 if __name__ == '__main__':
 	all_ivs_df = get_IV_for_columns_df(2)
