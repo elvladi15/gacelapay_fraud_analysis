@@ -1,23 +1,19 @@
-def feature_1_test(time):
-	return time > '23:00:00'
+from datetime import datetime
 
-def feature_2_test(customer_country):
-	return customer_country == 'BRAZIL'
+thresholds_list = [700, 710, 720, 730, 740, 750, 760, 770, 780, 790, 800]
 
-def feature_3_test(transaction_usd_amount):
-	return transaction_usd_amount > 5000
+def feature_1_test(date, time):
+	time = datetime.strptime(str(time), "%H:%M:%S").time()
+
+	if date.month in(1, 11, 12) and 12 <= time.hour <= 17: return 3
+	if date.month in(1, 11, 12): return 1
+	if 12 <= time.hour <= 17: return 1
+
+	return 0
 
 features_list = [
 	{
-		'columns': ['TIME'],
+		'columns': ['DATE', 'TIME'],
 		'function': feature_1_test
-	},
-	{
-		'columns': ['CUSTOMER_COUNTRY'],
-		'function': feature_2_test
-	},
-	{
-		'columns': ['TRANSACTION_USD_AMOUNT'],
-		'function': feature_3_test
 	}
 ]

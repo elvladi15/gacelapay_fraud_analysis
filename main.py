@@ -1,6 +1,6 @@
 from project.utils import generate_df_from_sql, generate_csv_file_from_df
 from project.ANALYSIS.analyze_transactions_data import Runner, get_test_cases, compare_test_cases
-from project.ANALYSIS.calculate_IV_per_column import get_IV_for_columns_df
+from project.ANALYSIS.calculate_IV_per_column import get_IV_for_columns_df, get_combined_column_stats_df
 
 if __name__ == '__main__':
 	#STEP 1: CLEAN DATASETS
@@ -35,47 +35,32 @@ if __name__ == '__main__':
 	generate_csv_file_from_df(df, 'project/ANALYSIS/DENORMALIZED_TRANSACTIONS.csv')
 	print('file: DENORMALIZED_TRANSACTIONS.csv created.')
 
-	# STEP 3: GET INFORMATION VALUE FOR N COLUMN INTERACTIONS TO KNOW WHICH COMBINATIONS ARE MORE EFFECTIVE AT DETECTING FRAUD
+	# STEP 3: GET INFORMATION VALUE FOR EACH INDIVIDUAL COLUMNS (NO INTERACTION YET)
 
-	df = get_IV_for_columns_df(3)
-	generate_csv_file_from_df(df, 'project/ANALYSIS/COLUMN_IVS.csv')
+	all_ivs_df = get_IV_for_columns_df(2)
 
-	#STEP 4: CREATE THE BASE CASE FRAUD STATISTICS CSV AND THE TEST CASES CSV, BASED ON THE FEATURES AND WEIGHT
+	single_column_ivs_df = all_ivs_df[all_ivs_df['IDS'].str.split(',').str.len() == 1]
+
+	generate_csv_file_from_df(single_column_ivs_df, 'project/ANALYSIS/SINGLE_COLUMN_IVS.csv')
+
+	# STEP 4: GET INFORMATION VALUE FOR N COLUMN INTERACTIONS TO KNOW WHICH COMBINATIONS ARE MORE EFFECTIVE AT DETECTING FRAUD
+
+	combined_column_stats = get_combined_column_stats_df(all_ivs_df)
+
+	generate_csv_file_from_df(combined_column_stats, 'project/ANALYSIS/COMBINED_COLUMN_STATS.csv')
+
+	#STEP 5: CREATE THE BASE CASE FRAUD STATISTICS CSV AND THE TEST CASES CSV, BASED ON THE FEATURES AND WEIGHT
 	# PARAMETERS PASSED TO EACH FEATURE TO DETERMINE THE BEST CASE SCENARIO AND ITS PARAMETERS, AND COMPARE IT TO THE
 	# BASE CASE TO SEE IMPROVEMENTS
 
-	weight_parameters = [
-		{
-			'value': -6.5734,
-			'steps': 0.5,
-			'quantity': 3
-		},
-		{
-			'value': 1.9844,
-			'steps': 0.5,
-			'quantity': 3
-		},
-		{
-			'value': 2.9017,
-			'steps': 0.5,
-			'quantity': 3
-		},
-	]
-
-	threshold_parameters = {
-		'value': 700,
-		'steps': 50,
-		'quantity': 3
-	}
-
-	test_cases = get_test_cases(weight_parameters, threshold_parameters)
+	test_cases = get_test_cases()
 
 	base_test_case = {'weight_list': [0, 0, 0], 'threshold': 700}
 
 	Runner.run_many(
 		[
-			('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv', [base_test_case]),
-			('project/ANALYSIS/FRAUD_STATISTICS.csv', test_cases[:1])
+			('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv', True),
+			('project/ANALYSIS/FRAUD_STATISTICS.csv', False)
 		]
 	)
 

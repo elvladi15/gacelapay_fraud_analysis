@@ -2,12 +2,12 @@ WITH CTE AS
 (
 	SELECT
 		CASE
-			WHEN MONTH(DATE) IN(1, 11, 12) THEN 'HIGH_RISK'
+			WHEN CAST(JTA.TIME AS varchar) BETWEEN '12:00:00' AND '17:00:00' AND MONTH(DATE) IN(1, 11, 12) THEN 'HIGH_RISK'
 			ELSE 'NON_HIGH_RISK'
 		END	AS BUCKET,
 		IS_FRAUD
 	FROM
-		joined_tables_for_analysis
+		joined_tables_for_analysis	AS JTA
 )
 SELECT
 	BUCKET,

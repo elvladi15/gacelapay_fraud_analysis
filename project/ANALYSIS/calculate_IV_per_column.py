@@ -18,13 +18,13 @@ total_non_fraud = total_transactions - total_fraud
 analysis_buckets_directory = Path('project/SQL/BUCKETS/ANALYSIS_BUCKETS')
 
 def get_columns_bucket_query(column_list):
-	ids = ','.join(map(lambda x: str(x['id']), column_list))
+	ids = ','.join(map(lambda x: str(x['ID']), column_list))
 
-	name = 'x'.join(map(lambda x: x['name'], column_list))
+	name = 'x'.join(map(lambda x: x['NAME'], column_list))
 
 	return ids, name, f'''
 		WITH
-			{','.join(map(lambda x: f'BUCKET{x[0] + 1} AS({x[1]['query']})', enumerate(column_list)))}
+			{','.join(map(lambda x: f'BUCKET{x[0] + 1} AS({x[1]['QUERY']})', enumerate(column_list)))}
 		SELECT
 			{','.join(map(lambda x: f'BUCKET{x[0] + 1}.BUCKET', enumerate(column_list)))},
 			SUM(JTA.IS_FRAUD)	AS IS_FRAUD_QUANTITY,
@@ -73,10 +73,10 @@ def process_parameter(parameter):
 	iv, discrete_values_quantity = get_IV_for_column(bucket_df)
 
 	return {
-		'ids': ids,
-		'name': bucket_name_final,
-		'iv': iv,
-		'discrete_values_quantity': discrete_values_quantity
+		'IDS': ids,
+		'NAME': bucket_name_final,
+		'IV': iv,
+		'DISCRETE_VALUES_QUANTITY': discrete_values_quantity
 	}
 
 def get_IV_for_columns_df(col_combination_quantity):
@@ -88,9 +88,9 @@ def get_IV_for_columns_df(col_combination_quantity):
 		sql_query = open(file_path, 'r').read()
 
 		bucket_queries.append({
-			'id': index + 1,
-			'name': file_path.stem,
-			'query': sql_query
+			'ID': index + 1,
+			'NAME': file_path.stem,
+			'QUERY': sql_query
 		})
 
 	for i in range(col_combination_quantity):
@@ -99,7 +99,7 @@ def get_IV_for_columns_df(col_combination_quantity):
 	with mp.Pool(mp.cpu_count()) as pool:
 		column_IVs = list(pool.map(process_parameter, parameters))
 
-	column_IVs.sort(key=lambda x: x['iv'], reverse=True)
+	column_IVs.sort(key=lambda x: x['IV'], reverse=True)
 
 	return pd.DataFrame(column_IVs)
 
@@ -108,7 +108,7 @@ def get_combined_column_stats_df(df):
 	
 	for index, row in df.iterrows():
 
-		column_ids = row['ids'].split(',')
+		column_ids = row['IDS'].split(',')
 
 		if len(column_ids) == 1: continue
 
@@ -116,39 +116,30 @@ def get_combined_column_stats_df(df):
 
 		for curr_id in column_ids:
 			for index, curr_row in df.iterrows():
-				if curr_row['ids'] == curr_id:
+				if curr_row['IDS'] == curr_id:
 					column_details.append({
-						'name': curr_row['name'],
-						'iv': curr_row['iv']
+						'NAME': curr_row['NAME'],
+						'IV': curr_row['IV']
 					})
 
 		row_object_dict = {}
 
-		combined_iv = row['iv']
+		combined_iv = row['IV']
 
-		individual_ivs_sum = sum(map(lambda x: float(x['iv']), column_details))
-
-		for index, item in enumerate(column_details):
-			row_object_dict[f'column_{index + 1}'] = item['name']
-
-		row_object_dict['discrete_values_quantity'] = row['discrete_values_quantity']
-
-		row_object_dict['combined_iv'] = combined_iv
+		individual_ivs_sum = sum(map(lambda x: float(x['IV']), column_details))
 
 		for index, item in enumerate(column_details):
-			row_object_dict[f'iv_{index + 1}'] = item['iv']
+			row_object_dict[f'COLUMN_{index + 1}'] = item['NAME']
+
+		row_object_dict['DISCRETE_VALUES_QUANTITY'] = row['DISCRETE_VALUES_QUANTITY']
+
+		row_object_dict['COMBINED_IV'] = combined_iv
+
+		for index, item in enumerate(column_details):
+			row_object_dict[f'iv_{index + 1}'] = item['IV']
 		
-		row_object_dict['is_combined_iv_higher'] = combined_iv > individual_ivs_sum
+		row_object_dict['IS_COMBINED_IV_HIGHER'] = combined_iv > individual_ivs_sum
 
 		df_object_list.append(row_object_dict)
 
 	return pd.DataFrame(df_object_list)
-	
-if __name__ == '__main__':
-	all_ivs_df = get_IV_for_columns_df(2)
-
-	combined_column_stats = get_combined_column_stats_df(all_ivs_df)
-
-	combined_column_stats.columns = combined_column_stats.columns.str.upper()
-
-	generate_csv_file_from_df(combined_column_stats, 'project/ANALYSIS/COMBINED_COLUMN_STATS.csv')
