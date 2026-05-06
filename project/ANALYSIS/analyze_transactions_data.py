@@ -30,7 +30,6 @@ class Runner:
 	def __init__(self, file_name, is_base_case):
 		self.file_name = file_name
 		self.is_base_case = is_base_case
-		self.start_time = time.time()
 
 	def create_test_cases_csv(self):
 		df = pd.DataFrame(columns=column_order)
@@ -48,10 +47,10 @@ class Runner:
 
 			sorted_df.to_csv(self.file_name, index=False)
 
-			print(f'Total time taken to generate and order the file: {self.file_name}: {time.time() - self.start_time:.2f} seconds.')
+			print(f'\tFile: {self.file_name} generated.')
 		except Exception as e:
-			print('Error while sorting the file. Undergo manual review.')
-			print(f'Error message: {e}')
+			print('\tError while sorting the file. Undergo manual review.')
+			print(f'\tError message: {e}')
 
 	def append_test_case_to_csv(self, threshold):
 		test_case_transactions_df = get_test_case_transactions_df(threshold, self.is_base_case)
@@ -96,7 +95,7 @@ def get_test_case_transactions_df(threshold, is_base_case):
 
 	return duckdb.sql(sql_query).df()
 
-def compare_test_cases():
+def generate_compare_test_cases_csv():
 	test_case_1 = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv')
 	test_case_2 = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS.csv').head(1)
 
@@ -105,11 +104,3 @@ def compare_test_cases():
 	sql_query = open(sql_file, 'r').read()
 
 	duckdb.sql(sql_query).df().to_csv('project/ANALYSIS/COMPARE_TEST_CASES.csv', index = False, encoding='utf-8-sig')
-
-	print('Parameters of the best test case execution:')
-
-	for column in test_case_2.columns:
-		if(len(column) == 2 and column[0] == 'W'):
-			print(f'{column}: {test_case_2[column][0]}')
-
-	print(f'THRESHOLD: {test_case_2['THRESHOLD'][0]}')
