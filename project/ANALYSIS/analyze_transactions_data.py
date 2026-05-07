@@ -1,11 +1,8 @@
 import duckdb
 from scipy.special import logit, expit
-import project.utils
 import project.ANALYSIS.features as features
 import pandas as pd
-import math
 import multiprocessing as mp
-import time
 from pathlib import Path
 from project.utils import generate_csv_file_from_df
 
@@ -95,10 +92,7 @@ def get_test_case_transactions_df(threshold, is_base_case):
 
 	return duckdb.sql(sql_query).df()
 
-def generate_compare_test_cases_csv():
-	test_case_1 = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv')
-	test_case_2 = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS.csv').head(1)
-
+def generate_compare_test_cases_csv(test_case_1_df, test_case_2_df):
 	sql_file = Path('project/SQL/COMPARE_TEST_CASES.sql')
 
 	sql_query = open(sql_file, 'r').read()

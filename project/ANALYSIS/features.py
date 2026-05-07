@@ -1,6 +1,6 @@
 from datetime import datetime
 
-thresholds_list = list(range(850, 991, 10))
+thresholds_list = list(range(930, 941, 1))
 
 def feature_1_test(date, time):
 	time = datetime.strptime(str(time), "%H:%M:%S").time()
