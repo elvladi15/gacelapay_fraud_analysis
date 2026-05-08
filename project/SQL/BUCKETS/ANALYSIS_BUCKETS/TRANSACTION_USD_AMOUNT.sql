@@ -9,4 +9,4 @@ SELECT
 		WHEN TRANSACTION_USD_AMOUNT >= 10000 THEN '>=10000'
 	END	AS BUCKET
 FROM
-	joined_tables_for_analysis
+	data_source_to_analyze_iv

@@ -11,4 +11,4 @@ SELECT
 		WHEN AGE >= 80 AND AGE <= 90 THEN '80-90'
 	END	AS BUCKET
 FROM
-	joined_tables_for_analysis
+	data_source_to_analyze_iv

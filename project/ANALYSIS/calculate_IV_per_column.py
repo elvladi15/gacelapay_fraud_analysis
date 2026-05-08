@@ -1,4 +1,3 @@
-from project.ANALYSIS.analyze_transactions_data import joined_tables_for_analysis
 import duckdb
 import math
 import pandas as pd
@@ -6,6 +5,9 @@ from pathlib import Path
 from itertools import combinations
 import multiprocessing as mp
 from project.utils import generate_csv_file_from_df
+from project.ANALYSIS.analyze_transactions_data import joined_tables_for_analysis
+
+data_source_to_analyze_iv = joined_tables_for_analysis.copy()
 
 LAPLACE_SMOOTHING = 0.5
 
@@ -79,10 +81,15 @@ def process_parameter(parameter):
 		'DISCRETE_VALUES_QUANTITY': discrete_values_quantity
 	}
 
-def get_IV_for_columns_df(col_combination_quantity):
+def get_IV_for_columns_df(col_combination_quantity, custom_filter_sql_path):
 	column_IVs = []
 	bucket_queries = []
 	parameters = []
+
+	if custom_filter_sql_path != None:
+		sql_query = open(custom_filter_sql_path, 'r').read()
+
+		data_source_to_analyze_iv = duckdb.sql(sql_query).df()
 
 	for index, file_path in enumerate(analysis_buckets_directory.iterdir()):
 		sql_query = open(file_path, 'r').read()
@@ -105,7 +112,7 @@ def get_IV_for_columns_df(col_combination_quantity):
 
 def get_combined_column_stats_df(df):
 	df_object_list = []
-	
+
 	for index, row in df.iterrows():
 
 		column_ids = row['IDS'].split(',')
@@ -137,7 +144,7 @@ def get_combined_column_stats_df(df):
 
 		for index, item in enumerate(column_details):
 			row_object_dict[f'iv_{index + 1}'] = item['IV']
-		
+
 		row_object_dict['IS_COMBINED_IV_HIGHER'] = combined_iv > individual_ivs_sum
 
 		df_object_list.append(row_object_dict)

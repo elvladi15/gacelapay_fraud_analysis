@@ -2,6 +2,7 @@ from project.utils import generate_df_from_sql, generate_csv_file_from_df
 from project.ANALYSIS.analyze_transactions_data import Runner, generate_compare_test_cases_csv
 from project.ANALYSIS.calculate_IV_per_column import get_IV_for_columns_df, get_combined_column_stats_df
 from project.ANALYSIS.calculate_bucket_weights import get_bucket_weights_df
+import pandas as pd
 
 if __name__ == '__main__':
 	#STEP 1: CLEAN DATASETS
@@ -41,7 +42,7 @@ if __name__ == '__main__':
 	# STEP 3: GET INFORMATION VALUE FOR EACH INDIVIDUAL COLUMNS (NO INTERACTION YET)
 	print('\nSTEP 3: GET INFORMATION VALUE FOR EACH INDIVIDUAL COLUMNS (NO INTERACTION YET)')
 
-	all_ivs_df = get_IV_for_columns_df(2)
+	all_ivs_df = get_IV_for_columns_df(2, None)
 
 	single_column_ivs_df = all_ivs_df[all_ivs_df['IDS'].str.split(',').str.len() == 1]
 
@@ -74,5 +75,11 @@ if __name__ == '__main__':
 		]
 	)
 
-	generate_compare_test_cases_csv()
+	base_test_case_df = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv')
+
+	best_test_case_df = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS.csv')
+	best_test_case_df = best_test_case_df[best_test_case_df['THRESHOLD'] == 934]
+
+	generate_compare_test_cases_csv(base_test_case_df, best_test_case_df)
+
 	print('\tFile: COMPARE_TEST_CASES.csv generated.')

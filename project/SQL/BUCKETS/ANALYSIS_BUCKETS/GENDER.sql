@@ -2,4 +2,4 @@ SELECT
 	ID,
 	GENDER	AS BUCKET
 FROM
-	joined_tables_for_analysis
+	data_source_to_analyze_iv

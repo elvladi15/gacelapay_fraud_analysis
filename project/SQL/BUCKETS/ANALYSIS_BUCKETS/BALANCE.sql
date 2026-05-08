@@ -10,4 +10,4 @@ SELECT
 		WHEN BALANCE >= 30000 THEN '>=30000'
 	END	AS BUCKET
 FROM
-	joined_tables_for_analysis
+	data_source_to_analyze_iv

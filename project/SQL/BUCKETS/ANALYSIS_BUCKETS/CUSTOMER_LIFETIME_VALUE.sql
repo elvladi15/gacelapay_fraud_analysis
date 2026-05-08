@@ -7,4 +7,4 @@ SELECT
 		WHEN CUSTOMER_LIFETIME_VALUE >= 100000 THEN 'VIP'
 	END	AS BUCKET
 FROM
-	joined_tables_for_analysis
+	data_source_to_analyze_iv
