@@ -65,13 +65,14 @@ def plot_statistic_comparison(row_index, col_index, test_cases, kpi):
 	axs[row_index, col_index].set_ylabel(kpi)
 	axs[row_index, col_index].set_title(f'{kpi} over time')
 
-base_test_case_df = get_test_case_transactions_df(700, True)
-best_test_case_df = get_test_case_transactions_df(940, False)
+def plot_base_and_best_case_comparison(threshold):
+	base_test_case_df = get_test_case_transactions_df(700, True)
+	best_test_case_df = get_test_case_transactions_df(threshold, False)
 
-for index, kpi in enumerate(kpi_names):
-	row = index // 2
-	col = index % 2
+	for index, kpi in enumerate(kpi_names):
+		row = index // 2
+		col = index % 2
 
-	plot_statistic_comparison(row, col, [base_test_case_df, best_test_case_df], kpi)
+		plot_statistic_comparison(row, col, [base_test_case_df, best_test_case_df], kpi)
 
-plt.show()
+	plt.show()

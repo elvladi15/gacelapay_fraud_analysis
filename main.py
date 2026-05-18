@@ -78,7 +78,7 @@ if __name__ == '__main__':
 	base_test_case_df = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv')
 
 	best_test_case_df = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS.csv')
-	best_test_case_df = best_test_case_df[best_test_case_df['THRESHOLD'] == 934]
+	best_test_case_df = best_test_case_df[best_test_case_df['THRESHOLD'] == 842]
 
 	generate_compare_test_cases_csv(base_test_case_df, best_test_case_df)
 
