@@ -3,8 +3,8 @@ from project.ANALYSIS.analyze_transactions_data import get_test_case_transaction
 import matplotlib.ticker as mtick
 import pandas as pd
 from sklearn.metrics import confusion_matrix
-
-fig, axs = plt.subplots(2, 2, figsize=(15, 8))
+import matplotlib.dates as mdates
+from main import MY_COLOR
 
 def get_kpi_for_test_case(test_case_df, kpi):
 	test_case_df['YEAR_MONTH'] = test_case_df['DATE'].dt.to_period('M')
@@ -23,7 +23,7 @@ def get_kpi_for_test_case(test_case_df, kpi):
 
 	grouped_df['GRAND_TOTAL'] = -grouped_df['GRAND_TOTAL']
 
-	grouped_df['YEAR_MONTH'] = grouped_df['YEAR_MONTH'].astype(str)
+	grouped_df['YEAR_MONTH'] = grouped_df['YEAR_MONTH'].dt.to_timestamp()
 
 	match kpi:
 		case 'FDR': grouped_df[kpi] = grouped_df['TRUE_POSITIVE'] / (grouped_df['TRUE_POSITIVE'] + grouped_df['FALSE_NEGATIVE'])
@@ -35,51 +35,74 @@ def get_kpi_for_test_case(test_case_df, kpi):
 
 	return grouped_df
 
-def plot_statistic_comparison(row_index, col_index, test_cases, kpi):
+def plot_line_chart_for_statistic_comparison(test_cases, kpi, title, file_name):
+	plt.close('all')
+	
+	fig, ax = plt.subplots(figsize=(12, 9))
+
 	df = pd.DataFrame()
 
-	for test_case in test_cases:
-		df = get_kpi_for_test_case(test_case, kpi)
+	colors = []
 
-		axs[row_index, col_index].plot(
+	for test_case in test_cases:
+
+		df = get_kpi_for_test_case(test_case['df'], kpi)
+
+		plt.plot(
 			df['YEAR_MONTH'],
 			df[kpi],
-			marker='o'
+			color=test_case['color'],
+			linewidth=3,
+			label=test_case['label']
 		)
 
-	axs[row_index, col_index].set_xticks(range(0, len(df['YEAR_MONTH']), 4))
+		colors.append(test_case['color'])
 
-	axs[row_index, col_index].tick_params(axis='x', rotation=45)
+	ticks = df['YEAR_MONTH'][::6]
 
-	if kpi != 'GRAND_TOTAL':
-		ax = axs[row_index, col_index]
+	ax.set_xticks(ticks)
 
-		ax.yaxis.set_major_formatter(
-			mtick.PercentFormatter(1.0, decimals=2)
-		)
+	ax.set_xticklabels(
+		ticks.dt.strftime('%b-%Y'),
+		rotation=45,
+		ha='right'
+	)
+	
+	title_lines = title.count('\n') + 1
 
-	axs[row_index, col_index].set_xlabel('Month')
-	axs[row_index, col_index].set_ylabel(kpi)
-	axs[row_index, col_index].set_title(f'{kpi} over time')
+	fig.suptitle(
+		title,
+		fontsize=30,
+		fontweight='bold',
+		y=0.93 + ((title_lines - 1) * 0.03)
+	)
 
-def save_base_and_best_case_comparison(test_case_df_1, test_case_df_2, file_name):
-	plt.close('all')
+	plt.legend(handlelength=1, labelcolor=colors, frameon=False, prop={'weight': 'bold', 'size': 14}, loc='lower center', bbox_to_anchor=(0.5, 1.02), ncol=2)
+	
+	ax.set_position([0.15, 0.2, 0.8, 0.55])
 
-	plt.subplots_adjust(hspace=0.5)
+	plt.xlabel('')
+	plt.ylabel(kpi, fontsize=20, fontweight='bold', labelpad=10)
 
-	kpi_names = ['FDR', 'FPR', 'PRECISION', 'ACCURACY']
+	ax.tick_params(axis='x', labelsize=16, width=2, length=9)
+	ax.tick_params(axis='y', labelsize=16, width=2, length=9)
 
-	for index, kpi in enumerate(kpi_names):
-		row = index // 2
-		col = index % 2
+	for label in ax.get_xticklabels():
+		label.set_fontweight('bold')
 
-		plot_statistic_comparison(row, col, [test_case_df_1, test_case_df_2], kpi)
+	for label in ax.get_yticklabels():
+		label.set_fontweight('bold')
+
+	for spine in ax.spines.values():
+		spine.set_visible(False)
+
+	ax.yaxis.set_major_formatter(
+		mtick.PercentFormatter(1.0, decimals=0)
+	)
 
 	plt.savefig(file_name)
 
 def generate_confusion_matrix(test_case_df, plot_title, file_name):
-	my_color = '#028895'
-
 	plt.close('all')
 
 	cm = confusion_matrix(test_case_df['IS_FRAUD'].tolist(), test_case_df['FLAGGED'].tolist())
@@ -88,32 +111,25 @@ def generate_confusion_matrix(test_case_df, plot_title, file_name):
 
 	fig, ax = plt.subplots(figsize=(12, 11))
 
-	ax.set_position([
-		0.15,
-		0.03,
-		0.75,
-		0.75
-	])
+	ax.set_position([0.15, 0.03, 0.75, 0.75])
 
 	ax.set_box_aspect(1)
 
 	ax.imshow(cm)
 
-	ax.set_title(plot_title, fontsize=35, pad=35, color=my_color, fontweight='bold')
+	ax.set_title(plot_title, fontsize=35, pad=35, fontweight='bold')
 
-	ax.set_xlabel('FLAGGED', fontsize=25, fontweight='bold', color=my_color, labelpad=25)
-	ax.set_ylabel('IS FRAUD', fontsize=25, fontweight='bold', color=my_color, labelpad=25)
+	ax.set_xlabel('FLAGGED', fontsize=25, fontweight='bold', labelpad=25)
+	ax.set_ylabel('IS FRAUD', fontsize=25, fontweight='bold', labelpad=25)
 
 	ax.xaxis.tick_top()
 	ax.xaxis.set_label_position('top')
 
 	for label in ax.get_xticklabels():
 		label.set_fontweight('bold')
-		label.set_color(my_color)
 
 	for label in ax.get_yticklabels():
 		label.set_fontweight('bold')
-		label.set_color(my_color)
 
 	ax.set_xticks([0, 1])
 	ax.set_yticks([0, 1])
@@ -145,7 +161,7 @@ def generate_confusion_matrix(test_case_df, plot_title, file_name):
 				1,
 				1,
 				fill=True,
-				color=my_color
+				color=MY_COLOR
 			)
 
 			ax.add_patch(rect)
