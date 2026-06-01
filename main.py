@@ -4,7 +4,8 @@ from project.ANALYSIS.calculate_IV_per_column import get_IV_for_columns_df, get_
 from project.ANALYSIS.calculate_bucket_weights import get_bucket_weights_df
 import pandas as pd
 
-MY_COLOR = '#028895'
+MY_BLUE_COLOR = '#028895'
+MY_GOLDEN_COLOR = '#bda154'
 
 if __name__ == '__main__':
 	#STEP 1: CLEAN DATASETS
