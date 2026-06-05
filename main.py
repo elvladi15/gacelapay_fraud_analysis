@@ -1,11 +1,11 @@
+import pandas as pd
 from project.utils import generate_df_from_sql, generate_csv_file_from_df
 from project.ANALYSIS.analyze_transactions_data import Runner, generate_compare_test_cases_csv
 from project.ANALYSIS.calculate_IV_per_column import get_IV_for_columns_df, get_combined_column_stats_df
 from project.ANALYSIS.calculate_bucket_weights import get_bucket_weights_df
-import pandas as pd
+from project.ANALYSIS.plot_results import get_test_case_transactions_df, plot_line_chart_for_statistic_comparison, generate_confusion_matrix, MY_BLUE_COLOR
 
-MY_BLUE_COLOR = '#028895'
-MY_GOLDEN_COLOR = '#bda154'
+threshold = 842
 
 if __name__ == '__main__':
 	#STEP 1: CLEAN DATASETS
@@ -81,8 +81,44 @@ if __name__ == '__main__':
 	base_test_case_results_df = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS_BASE_TEST_CASE.csv')
 
 	best_test_case_results_df = pd.read_csv('project/ANALYSIS/FRAUD_STATISTICS.csv')
-	best_test_case_results_df = best_test_case_results_df[best_test_case_results_df['THRESHOLD'] == 842]
+	best_test_case_results_df = best_test_case_results_df[best_test_case_results_df['THRESHOLD'] == threshold]
 	
 	generate_compare_test_cases_csv(base_test_case_results_df, best_test_case_results_df)
 
 	print('\tFile: COMPARE_TEST_CASES.csv generated.')
+
+	# STEP 7: GENERATE CHARTS
+
+	print('STEP 7: GENERATE CHARTS')
+
+	base_test_case_df = get_test_case_transactions_df(700, True)
+	best_test_case_df = get_test_case_transactions_df(threshold, False)
+
+	test_cases = [
+		{
+			'df': base_test_case_df,
+			'label': 'BEFORE MODEL CHANGES',
+			'color': '#ff7f0e',
+			'linewidth': 2
+		},
+		{
+			'df': best_test_case_df,
+			'label': 'AFTER MODEL CHANGES',
+			'color': MY_BLUE_COLOR,
+			'linewidth': 4
+		},
+	]
+
+	plot_line_chart_for_statistic_comparison(test_cases, 'FPR', 'False Positive Rates\nhave decreased significantly', 'assets/fpr_comparison.png', 0, 0.04, 0.01)
+	plot_line_chart_for_statistic_comparison(test_cases, 'ACCURACY', 'Accuracy has improved', 'assets/accuracy_comparison.png', 0.94, 0.99, 0.02)
+	plot_line_chart_for_statistic_comparison(test_cases, 'FDR', 'Fraud Detection Rate', 'assets/fdr_comparison.png', 0.2, 1, 0.2)
+	plot_line_chart_for_statistic_comparison(test_cases, 'PRECISION', 'Precision', 'assets/precision_comparison.png', 0.2, 0.8, 0.2)
+
+	plot_line_chart_for_statistic_comparison(test_cases, 'TOTAL_COSTS', 'Total Costs', 'assets/total_costs_comparison.png', 0, 35000, 10000)
+	plot_line_chart_for_statistic_comparison(test_cases, 'USD_FEES', 'Comissions', 'assets/usd_fees_comparison.png', 1400, 2400, 200)
+	plot_line_chart_for_statistic_comparison(test_cases, 'GRAND_TOTAL', 'Grand Total', 'assets/grand_total_comparison.png', 0, 35000, 10000)
+
+	generate_confusion_matrix(base_test_case_df, 'Large amount of FP and FN', 'assets/current_confusion_matrix.png')
+	generate_confusion_matrix(best_test_case_df, 'After model adjustments', 'assets/after_model_adjustments_confusion_matrix.png')
+
+	print('\tAll charts have been generated.')

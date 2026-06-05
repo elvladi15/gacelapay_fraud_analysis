@@ -5,8 +5,8 @@ thresholds_list = list(range(500, 999 + 1, 1))
 def feature_1_test(date, time):
 	time = datetime.strptime(str(time), "%H:%M:%S").time()
 
-	if date.month in(1, 11, 12) and 12 <= time.hour <= 17: return 1.4361 #- 0.4
-	if date.month in(1, 11, 12): return 0.8113 #- 0.4
+	if date.month in(1, 11, 12) and 12 <= time.hour <= 17: return 1.4361
+	if date.month in(1, 11, 12): return 0.8113
 	if 12 <= time.hour <= 17: return 0.6016
 
 	return 0

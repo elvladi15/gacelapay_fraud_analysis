@@ -1,10 +1,12 @@
-import matplotlib.pyplot as plt
-from project.ANALYSIS.analyze_transactions_data import get_test_case_transactions_df
-import matplotlib.ticker as mtick
 import pandas as pd
-from sklearn.metrics import confusion_matrix
-from main import MY_BLUE_COLOR, MY_GOLDEN_COLOR
+import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.metrics import confusion_matrix
+import matplotlib.ticker as mtick
+from project.ANALYSIS.analyze_transactions_data import get_test_case_transactions_df
+
+MY_BLUE_COLOR = '#028895'
+MY_GOLDEN_COLOR = '#bda154'
 
 font_family = 'Tahoma'
 

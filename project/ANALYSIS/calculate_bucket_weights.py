@@ -27,7 +27,3 @@ def get_bucket_weights_df():
 	df_object_list.sort(key=lambda x: x['WOE'], reverse=True)
 
 	return pd.DataFrame(df_object_list)
-
-#print(get_bucket_weights_per_query_df('project/SQL/BUCKETS/WEIGHT_CALCULATION_BUCKETS/TRANSACTION_USD_AMOUNT.sql'))
-
-#generate_csv_file_from_df(get_bucket_weights_df(), 'project/ANALYSIS/WEIGHTS.csv')
