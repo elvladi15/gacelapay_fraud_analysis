@@ -5,7 +5,7 @@ from project.ANALYSIS.calculate_IV_per_column import get_IV_for_columns_df, get_
 from project.ANALYSIS.calculate_bucket_weights import get_bucket_weights_df
 from project.ANALYSIS.plot_results import get_test_case_transactions_df, plot_line_chart_for_statistic_comparison, generate_confusion_matrix, MY_BLUE_COLOR
 
-threshold = 842
+threshold = 845
 
 if __name__ == '__main__':
 	#STEP 1: CLEAN DATASETS
