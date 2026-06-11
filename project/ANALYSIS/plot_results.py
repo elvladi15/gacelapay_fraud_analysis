@@ -10,11 +10,11 @@ MY_GOLDEN_COLOR = '#bda154'
 
 font_family = 'Tahoma'
 
-def get_kpi_for_test_case(test_case_df, kpi):
-	test_case_df['YEAR_MONTH'] = test_case_df['DATE'].dt.to_period('M')
+def get_kpi_for_test_case(test_case_df, kpi, time_aggregation):
+	test_case_df['TIME'] = test_case_df['DATE'].dt.to_period(time_aggregation)
 
 	grouped_df = (
-		test_case_df.groupby('YEAR_MONTH')
+		test_case_df.groupby('TIME')
 		.agg(
 			FALSE_POSITIVE = ('ML_RESULT', lambda x: (x == 'FALSE POSITIVE').sum()),
 			FALSE_NEGATIVE = ('ML_RESULT', lambda x: (x == 'FALSE NEGATIVE').sum()),
@@ -30,7 +30,7 @@ def get_kpi_for_test_case(test_case_df, kpi):
 	grouped_df['TOTAL_COSTS'] = -grouped_df['TOTAL_COSTS']
 	grouped_df['GRAND_TOTAL'] = -grouped_df['GRAND_TOTAL']
 
-	grouped_df['YEAR_MONTH'] = grouped_df['YEAR_MONTH'].dt.to_timestamp()
+	grouped_df['TIME'] = grouped_df['TIME'].dt.to_timestamp()
 
 	match kpi:
 		case 'FDR': grouped_df[kpi] = grouped_df['TRUE_POSITIVE'] / (grouped_df['TRUE_POSITIVE'] + grouped_df['FALSE_NEGATIVE'])
@@ -38,11 +38,11 @@ def get_kpi_for_test_case(test_case_df, kpi):
 		case 'PRECISION': grouped_df[kpi] = grouped_df['TRUE_POSITIVE'] / (grouped_df['TRUE_POSITIVE'] + grouped_df['FALSE_POSITIVE'])
 		case 'ACCURACY': grouped_df[kpi] = (grouped_df['TRUE_POSITIVE'] + grouped_df['TRUE_NEGATIVE']) / (grouped_df['TRUE_POSITIVE'] + grouped_df['TRUE_NEGATIVE'] + grouped_df['FALSE_POSITIVE'] + grouped_df['FALSE_NEGATIVE'])
 
-	grouped_df = grouped_df.sort_values('YEAR_MONTH')
+	grouped_df = grouped_df.sort_values('TIME')
 
 	return grouped_df
 
-def plot_line_chart_for_statistic_comparison(test_cases, kpi, title, file_name, step_start, step_end, step_value):
+def plot_line_chart_for_statistic_comparison(params):
 	plt.close('all')
 	
 	fig, ax = plt.subplots(figsize=(12, 9))
@@ -51,13 +51,13 @@ def plot_line_chart_for_statistic_comparison(test_cases, kpi, title, file_name, 
 
 	colors = []
 
-	for test_case in test_cases:
+	for test_case in params['test_cases']:
 
-		df = get_kpi_for_test_case(test_case['df'], kpi)
+		df = get_kpi_for_test_case(test_case['df'], params['kpi'], params['time_aggregation'])
 
 		plt.plot(
-			df['YEAR_MONTH'],
-			df[kpi],
+			df['TIME'],
+			df[params['kpi']],
 			color=test_case['color'],
 			linewidth=test_case['linewidth'],
 			label=test_case['label']
@@ -65,7 +65,7 @@ def plot_line_chart_for_statistic_comparison(test_cases, kpi, title, file_name, 
 
 		colors.append(test_case['color'])
 
-	ticks = df['YEAR_MONTH'][0::12]
+	ticks = df['TIME'][0::params['time_step']]
 
 	ax.set_xticks(ticks)
 
@@ -75,21 +75,21 @@ def plot_line_chart_for_statistic_comparison(test_cases, kpi, title, file_name, 
 		ha='right'
 	)
 	
-	title_lines = title.count('\n') + 1
+	title_lines = params['title'].count('\n') + 1
 
 	fig.suptitle(
-		title,
+		params['title'],
 		fontname=font_family,
 		fontsize=30,
 		y=0.93 + ((title_lines - 1) * 0.03)
 	)
 
-	plt.legend(handlelength=1, labelcolor=colors, frameon=False, prop={'weight': 'bold', 'size': 14}, loc='lower center', bbox_to_anchor=(0.5, 1.02), ncol=2)
+	if params['show_legend']: plt.legend(handlelength=1, labelcolor=colors, frameon=False, prop={'weight': 'bold', 'size': 14}, loc='lower center', bbox_to_anchor=(0.5, 1.02), ncol=2)
 	
 	ax.set_position([0.15, 0.2, 0.8, 0.55])
 
 	plt.xlabel('')
-	plt.ylabel(kpi.replace('_', ' '), fontsize=20, fontweight='bold', labelpad=10)
+	plt.ylabel(params['kpi'].replace('_', ' '), fontsize=20, fontweight='bold', labelpad=10)
 
 	ax.tick_params(axis='x', labelsize=16, width=2, length=9)
 	ax.tick_params(axis='y', labelsize=16, width=2, length=9)
@@ -103,24 +103,26 @@ def plot_line_chart_for_statistic_comparison(test_cases, kpi, title, file_name, 
 	for spine in ax.spines.values():
 		spine.set_visible(False)
 
-	plt.yticks(
-		np.arange(step_start, step_end + step_value, step_value)
-	)
+	if params['step_start'] != None:
+		plt.yticks(
+			np.arange(params['step_start'], params['step_end'] + params['step_value'], params['step_value'])
+		)
 
-	if kpi in ('TOTAL_COSTS', 'GRAND_TOTAL', 'USD_FEES'):
-		plt.gca().yaxis.set_major_formatter(
-			mtick.FuncFormatter(
-				lambda x, p: (
-					f'{x/1000:.{1 if kpi == 'USD_FEES' else 0}f}K' if x >= 1000 else f'{x:.0f}'
+	match params['y_axis_metric']:
+		case 'money':
+			plt.gca().yaxis.set_major_formatter(
+				mtick.FuncFormatter(
+					lambda x, p: (
+						f'{x/1000:.{1 if params['kpi'] == 'USD_FEES' else 0}f}K' if x >= 1000 else f'{x:.0f}'
+					)
 				)
 			)
-		)
-	else:
-		ax.yaxis.set_major_formatter(
-			mtick.PercentFormatter(1.0, decimals=0)
-		)
+		case 'percent':
+			ax.yaxis.set_major_formatter(
+				mtick.PercentFormatter(1.0, decimals=params['decimals'])
+			)
 
-	plt.savefig(file_name)
+	plt.savefig(params['file_name'])
 
 def generate_confusion_matrix(test_case_df, plot_title, file_name):
 	plt.close('all')

@@ -109,14 +109,97 @@ if __name__ == '__main__':
 		},
 	]
 
-	plot_line_chart_for_statistic_comparison(test_cases, 'FPR', 'False Positive Rates\nhave decreased significantly', 'assets/fpr_comparison.png', 0, 0.04, 0.01)
-	plot_line_chart_for_statistic_comparison(test_cases, 'ACCURACY', 'Accuracy has improved', 'assets/accuracy_comparison.png', 0.94, 0.99, 0.02)
-	plot_line_chart_for_statistic_comparison(test_cases, 'FDR', 'Fraud Detection Rate', 'assets/fdr_comparison.png', 0.2, 1, 0.2)
-	plot_line_chart_for_statistic_comparison(test_cases, 'PRECISION', 'Precision', 'assets/precision_comparison.png', 0.2, 0.8, 0.2)
+	plot_line_chart_for_statistic_comparison(
+		{
+			'test_cases': [
+				{
+					'df': base_test_case_df,
+					'label': 'BEFORE MODEL CHANGES',
+					'color': MY_BLUE_COLOR,
+					'linewidth': 4
+				}
+			],
+			'kpi': 'FPR',
+			'title': 'Steady increase on\nFalse Positive Rates over the last 4 years',
+			'file_name': 'assets/current_fpr.png',
+			'step_start': 0.0352,
+			'step_end': 0.036,
+			'step_value': 0.0002,
+			'decimals': 2,
+			'show_legend': False,
+			'time_aggregation': 'Y',
+			'time_step': 1,
+			'y_axis_metric': 'percent'
+		}
+	)
 
-	plot_line_chart_for_statistic_comparison(test_cases, 'TOTAL_COSTS', 'Total Costs', 'assets/total_costs_comparison.png', 0, 35000, 10000)
-	plot_line_chart_for_statistic_comparison(test_cases, 'USD_FEES', 'Comissions', 'assets/usd_fees_comparison.png', 1400, 2400, 200)
-	plot_line_chart_for_statistic_comparison(test_cases, 'GRAND_TOTAL', 'Grand Total', 'assets/grand_total_comparison.png', 0, 35000, 10000)
+	plot_line_chart_for_statistic_comparison(
+		{
+			'test_cases': test_cases,
+			'kpi': 'FPR',
+			'title': 'Improved False Positive Rates\nconsistently under 2%',
+			'file_name': 'assets/fpr_comparison.png',
+			'step_start': 0,
+			'step_end': 0.04,
+			'step_value': 0.01,
+			'decimals': 0,
+			'show_legend': True,
+			'time_aggregation': 'M',
+			'time_step': 12,
+			'y_axis_metric': 'percent'
+		}
+	)
+
+	plot_line_chart_for_statistic_comparison(
+		{
+			'test_cases': test_cases,
+			'kpi': 'ACCURACY',
+			'title': 'Accuracy',
+			'file_name': 'assets/accuracy_comparison.png',
+			'step_start': 0.94,
+			'step_end': 0.99,
+			'step_value': 0.02,
+			'decimals': 0,
+			'show_legend': True,
+			'time_aggregation': 'M',
+			'time_step': 12,
+			'y_axis_metric': 'percent'
+		}
+	)
+
+	plot_line_chart_for_statistic_comparison(
+		{
+			'test_cases': test_cases,
+			'kpi': 'FDR',
+			'title': 'FDR',
+			'file_name': 'assets/fdr_comparison.png',
+			'step_start': 0.2,
+			'step_end': 1,
+			'step_value': 0.2,
+			'decimals': 0,
+			'show_legend': True,
+			'time_aggregation': 'M',
+			'time_step': 12,
+			'y_axis_metric': 'percent'
+		}
+	)
+
+	plot_line_chart_for_statistic_comparison(
+		{
+			'test_cases': test_cases,
+			'kpi': 'PRECISION',
+			'title': 'Precision',
+			'file_name': 'assets/precision_comparison.png',
+			'step_start': 0.2,
+			'step_end': 0.8,
+			'step_value': 0.2,
+			'decimals': 0,
+			'show_legend': True,
+			'time_aggregation': 'M',
+			'time_step': 12,
+			'y_axis_metric': 'percent'
+		}
+	)
 
 	generate_confusion_matrix(base_test_case_df, 'Large amount of FP and FN', 'assets/current_confusion_matrix.png')
 	generate_confusion_matrix(best_test_case_df, 'After model adjustments', 'assets/after_model_adjustments_confusion_matrix.png')
