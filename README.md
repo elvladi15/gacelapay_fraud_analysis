@@ -31,6 +31,7 @@ The following confusion matrix shows the flag results:
 <div align='center'>
 	<img width='60%' src='assets/current_confusion_matrix.png'/>
 </div>
+<br>
 
 Given these values, the resulting core metrics arise:
 
@@ -44,8 +45,9 @@ Given these values, the resulting core metrics arise:
 Such high False Positive Rate coincides with customer churn rising over the years.
 
 <div align='center'>
-	<img src='assets/current_fpr.png'/>
+	<img width='80%' src='assets/current_fpr.png'/>
 </div>
+<br>
 
 Aside from this, it's been reported that total costs associated with fraud activity and incorrect flaggings total over **$560K** dollars.
 
@@ -65,7 +67,7 @@ Fraud Strategy and Financial department has made it clear that they need to meet
 1. When a transaction seems to have high fraud probability, how should we scale up that probability?
 1. What features and parameters are recommended to reduce FPR and total costs?
 
-## Dataset Structure and ERD (Entity relationship diagram)
+## Dataset Structure and ERD (Entity Relationship Diagram)
 
 <div align='center'>
 	<img width='80%' src='assets/entity_relationship_diagram.png'/>
@@ -85,9 +87,32 @@ IV value Reference table:
 | 0.1 - 0.3 | Medium/useful|
 | >0.3 | Strong |
 
-<div style="display: flex; gap: 15px; justify-content: center;">
+<br>
+<div style='display: flex; justify-content: space-between;'>
 	<img width='48%' src='assets/best_columns.png'/>
 	<img width='48%' src='assets/combined_IVs_table.png'/>
 </div>
 
 ## Insights Deep-Dive
+
+<div style='display: flex; justify-content: space-between; width: 100%'>
+	<div style='flex: 0 0 48%'>
+		<img style='' src='assets/fraud_over_time.png'/>
+		<h2>1. Transaction Month:</h2>
+		<ul>
+			<li>November, december and january consistently register higher fraud post-pandemic with <strong>fraud rates over 4%</strong>.</li>
+			<li>Special holidays during this season <strong>(Black Friday, Chrismas, New Year, etc)</strong> see an increase in sales and transaction volume, offering bigger opportunities for malicious entities to operate.</li>
+			<li>WoE (Weight of Evidence) of transactions done between november and january is 1.4361, which makes these transactions <strong>4.2x more likely to be fraud</strong> than the others.</li>
+		</ul>
+	</div>
+	<div style='flex: 0 0 48%'>
+		<img style='' src='assets/hours_bar_chart.png'/>
+		<h2><strong>1. Transaction Month:</strong></h2>
+		<ul>
+			<li>a</li>
+			<li>b</li>
+			<li>c</li>
+			<li>d</li>
+		</ul>
+	</div>
+</div>
