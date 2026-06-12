@@ -88,31 +88,58 @@ IV value Reference table:
 | >0.3 | Strong |
 
 <br>
-<div style='display: flex; justify-content: space-between;'>
-	<img width='48%' src='assets/best_columns.png'/>
-	<img width='48%' src='assets/combined_IVs_table.png'/>
-</div>
+<table>
+	<tr>
+		<td>
+			<img src='assets/best_columns.png'/>
+		</td>
+		<td>
+			<img src='assets/combined_IVs_table.png'/>
+		</td>
+	</tr>
+</table>
 
 ## Insights Deep-Dive
 
-<div style='display: flex; justify-content: space-between; width: 100%'>
-	<div style='flex: 0 0 48%'>
-		<img style='' src='assets/fraud_over_time.png'/>
-		<h2>1. Transaction Month:</h2>
-		<ul>
-			<li>November, december and january consistently register higher fraud post-pandemic with <strong>fraud rates over 4%</strong>.</li>
-			<li>Special holidays during this season <strong>(Black Friday, Chrismas, New Year, etc)</strong> see an increase in sales and transaction volume, offering bigger opportunities for malicious entities to operate.</li>
-			<li>WoE (Weight of Evidence) of transactions done between november and january is 1.4361, which makes these transactions <strong>4.2x more likely to be fraud</strong> than the others.</li>
-		</ul>
-	</div>
-	<div style='flex: 0 0 48%'>
-		<img style='' src='assets/hours_bar_chart.png'/>
-		<h2><strong>1. Transaction Month:</strong></h2>
-		<ul>
-			<li>a</li>
-			<li>b</li>
-			<li>c</li>
-			<li>d</li>
-		</ul>
-	</div>
-</div>
+<table>
+	<tr>
+		<td>
+			<img style='' src='assets/fraud_over_time.png'/>
+			<h2>1. Transaction Month:</h2>
+			<ul>
+				<li>November, december and january consistently register higher fraud post-pandemic with <strong>fraud rates over 4%</strong>.</li>
+				<li>Special holidays during this season <strong>(Black Friday, Chrismas, New Year, etc)</strong> see an increase in sales and transaction volume, offering bigger opportunities for malicious entities to operate.</li>
+				<li>WoE (Weight of Evidence) of transactions done between november and january is 1.4361, which makes these transactions <strong>4.2x more likely to be fraud</strong> than the others.</li>
+			</ul>
+		</td>
+		<td>
+			<img style='' src='assets/fraud_over_time.png'/>
+			<h2>1. Transaction Month:</h2>
+			<ul>
+				<li>November, december and january consistently register higher fraud post-pandemic with <strong>fraud rates over 4%</strong>.</li>
+				<li>Special holidays during this season <strong>(Black Friday, Chrismas, New Year, etc)</strong> see an increase in sales and transaction volume, offering bigger opportunities for malicious entities to operate.</li>
+				<li>WoE (Weight of Evidence) of transactions done between november and january is 1.4361, which makes these transactions <strong>4.2x more likely to be fraud</strong> than the others.</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<img style='' src='assets/fraud_over_time.png'/>
+			<h2>1. Transaction Month:</h2>
+			<ul>
+				<li>November, december and january consistently register higher fraud post-pandemic with <strong>fraud rates over 4%</strong>.</li>
+				<li>Special holidays during this season <strong>(Black Friday, Chrismas, New Year, etc)</strong> see an increase in sales and transaction volume, offering bigger opportunities for malicious entities to operate.</li>
+				<li>WoE (Weight of Evidence) of transactions done between november and january is 1.4361, which makes these transactions <strong>4.2x more likely to be fraud</strong> than the others.</li>
+			</ul>
+		</td>
+		<td>
+			<img style='' src='assets/fraud_over_time.png'/>
+			<h2>1. Transaction Month:</h2>
+			<ul>
+				<li>November, december and january consistently register higher fraud post-pandemic with <strong>fraud rates over 4%</strong>.</li>
+				<li>Special holidays during this season <strong>(Black Friday, Chrismas, New Year, etc)</strong> see an increase in sales and transaction volume, offering bigger opportunities for malicious entities to operate.</li>
+				<li>WoE (Weight of Evidence) of transactions done between november and january is 1.4361, which makes these transactions <strong>4.2x more likely to be fraud</strong> than the others.</li>
+			</ul>
+		</td>
+	</tr>
+</table>
