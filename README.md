@@ -111,7 +111,7 @@ IV value Reference table:
 
 - Special holidays during this season **(Black Friday, Chrismas, New Year, etc)** see an increase in sales and transaction volume, offering bigger opportunities for malicious entities to operate.
 
-- WoE (Weight of Evidence) of transactions done between november and january is 1.4361, which increases the odds of these transactions of being fraud by **4.2x** more than the others.
+- WoE (Weight of Evidence) of transactions done between november and january is 0.8113, which increases the odds of these transactions of being fraud by **2.25x** more than the others.
 
 <br>
 <br>
@@ -131,3 +131,129 @@ IV value Reference table:
 
 <br>
 <br>
+
+<div align='center'>
+	<img width='80%' src='assets/heatmap.png'/>
+</div>
+<br>
+
+- Fraud detection can become more precise when 2 or more fields are present in a transaction. In this case, both fields being high risk, there is no surprise they increase fraud rates when combined.
+
+- WoE: 1.4361, increasing odds by around **4.2x** of being fraud, working better than flagging individually.
+
+<br>
+<br>
+
+<div align='center'>
+	<img width='80%' src='assets/merchant_category_bar_chart.png'/>
+</div>
+<br>
+
+- Digital goods, such as gift cards, gaming credits, software licenses, and subscriptions are delivered immediately, giving fraudsters **little time to be stopped**.
+
+- Flights, hotels, and vacation packages can generate **large profits** from a single successful fraud attempt, hence explaining why travel category exhibits these numbers.
+
+- High value products such as smartphones, laptops, and designer goods can be **converted into cash** relatively easily.
+
+- WoE: 0.5786, increasing odds by around **78%** of being fraud.
+
+<br>
+<br>
+
+<div align='center'>
+	<img width='80%' src='assets/channel_bar_chart.png'/>
+</div>
+<br>
+
+- Fraud rates increase as transactions move further away from physical possession and rely more heavily on digital identity.
+
+- Traditional channels tend to have stronger friction and verification.
+
+- Mobile app fraud is frequently linked to account takeover.
+
+- WoE: 0.3398, increasing odds by **40%** of being fraud.
+
+<br>
+<br>
+
+<div align='center'>
+	<img width='80%' src='assets/transaction_amount_table.png'/>
+</div>
+<br>
+
+- Larger transactions are more attractive to fraudsters, as they are less common than the low value transactions.
+
+- Since these transactions are more routinary, they concentrate higher volumne, but seems like malicious agents find higher amount transactions more than worth it.
+
+- Risk often increases outside the normal spending band.
+
+- WoE: -1.6775, reducing odds by **81%** of being fraud.
+
+## Final results
+
+After analysing these fields and having obtained the best logit values based on Weight of Evidence calculation, we can turn this information into conditional features that, when met by transactions, can increase or decrease its likelyhood of being fraud.
+
+Now, the final step is to determine what should be the best threshold by which we consider a transaction legitimate or fraud. The focus is on reducing the False Positive Rates and total costs associated with fraud.
+
+It's worth mentioning that:
+
+<h3 style="padding: 10px; border-left: 5px solid #ffc107; text-align: center">
+	Higher thresholds naturally decrease False Positive Rates, but may also increase False Negatives, which significantly increases costs, since failing to catch actual fraud reduces chances of recovering the funds, potentially incurring chargebacks of 100%+.
+</h3>
+
+<br>
+
+The results are as shown:
+
+<div align='center'>
+	<img width='80%' src='assets/best_threshold.png'/>
+</div>
+
+<br>
+
+This threshold was carefully chosen as **reduces costs under $400k and fraud rates under 1%**.
+
+<br>
+
+<table>
+	<tr>
+		<td>
+			<img src='assets/before_confusion_matrix.png'/>
+		</td>
+		<td>
+			<img src='assets/after_model_adjustments_confusion_matrix.png'/>
+		</td>
+	</tr>
+</table>
+
+<br>
+
+<div align='center'>
+	<img width='80%' src='assets/final_comparison.png'/>
+</div>
+
+## Key Takeaways and Recommendations
+
+For the Fraud Strategy department:
+
+- Utilize Logistic regression as the main method for adjusting and testing fraud detection approaches.
+
+- Key fields to pay most attention to: Transaction month, hour, merchant category, channel and transaction USD amount, as these columns offer higher precision and accuracy at flagging fraud activity.
+
+- Use these logit values as reference for calibrating flagging rules:
+
+| Columns | Conditions | Logit |
+| --- | --- | --- |
+| Transaction month | November, december and january months | 0.8113 |
+| Transaction hour | Between 12pm and 5pm | 0.6016 |
+| Month + hour | Risky month and risky hours as previously described | 1.4361 |
+| Merchant category | High value retail, travel and digital goods | 0.5786 |
+| Channel | Virtual card, fake mobile app, mobile app and SIM swap | 0.3398 |
+| Transaction USD amount | Between $0.51 and $832.03 | -1.6775 |
+
+<h3 style="padding: 10px; border-left: 5px solid #ffc107;">
+	Note: Only use these parameters AS GENERAL REFERENCE, since these were ones that offered better results during testing.
+</h3>
+
+- Closely monitor main KPIs every month (FPR and total costs) and adjust parameters to effectively improve future results.
+- Avoid overfitting with many features and conditions as this can harshly impact detection on future, frequent changing data.

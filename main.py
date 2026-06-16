@@ -202,6 +202,7 @@ if __name__ == '__main__':
 	)
 
 	generate_confusion_matrix(base_test_case_df, 'Large amount of FP and FN', 'assets/current_confusion_matrix.png')
+	generate_confusion_matrix(base_test_case_df, 'Before', 'assets/before_confusion_matrix.png')
 	generate_confusion_matrix(best_test_case_df, 'After model adjustments', 'assets/after_model_adjustments_confusion_matrix.png')
 
 	print('\tAll charts have been generated.')
