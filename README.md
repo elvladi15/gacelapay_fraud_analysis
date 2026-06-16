@@ -197,7 +197,7 @@ Now, the final step is to determine what should be the best threshold by which w
 
 It's worth mentioning that:
 
-<h3 style="padding: 10px; border-left: 5px solid #ffc107; text-align: center">
+<h3 style="text-align: center">
 	Higher thresholds naturally decrease False Positive Rates, but may also increase False Negatives, which significantly increases costs, since failing to catch actual fraud reduces chances of recovering the funds, potentially incurring chargebacks of 100%+.
 </h3>
 
@@ -251,9 +251,12 @@ For the Fraud Strategy department:
 | Channel | Virtual card, fake mobile app, mobile app and SIM swap | 0.3398 |
 | Transaction USD amount | Between $0.51 and $832.03 | -1.6775 |
 
-<h3 style="padding: 10px; border-left: 5px solid #ffc107;">
+<h3 style="text-align: center">
 	Note: Only use these parameters AS GENERAL REFERENCE, since these were ones that offered better results during testing.
 </h3>
+
+> [!WARNING]
+> This creates an orange box for urgent warnings.
 
 - Closely monitor main KPIs every month (FPR and total costs) and adjust parameters to effectively improve future results.
 - Avoid overfitting with many features and conditions as this can harshly impact detection on future, frequent changing data.
