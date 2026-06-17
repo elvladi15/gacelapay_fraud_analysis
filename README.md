@@ -7,33 +7,33 @@
 </div>
 
 ## Company Background
-**GacelaPay** is a Mexico-based digital financial institution that provides payment and banking services to retail customers across Latin America and Europe, serving thousands of customers across these regions. Founded in 2018 and headquartered in Mexico City, the company has experienced rapid growth by offering a mobile-first experience focused on speed, accessibility, and low fees. It currently features over **50K** transactions.
+**GacelaPay** is a Mexico-based digital financial institution that provides payment and banking services to retail customers across Latin America and Europe, serving thousands of customers in these regions. Founded in 2018 and headquartered in Mexico City, the company has experienced rapid growth by offering a mobile-first experience focused on speed, accessibility, and low fees. It currently processes over **50K** transactions.
 
 GacelaPay's product ecosystem includes:
 1. Debit accounts for everyday spending and transfers
-1. Credit cards with integrated rewards programs
-1. Crypto accounts that allow customers to buy, sell, and hold selected cryptocurrencies
-1. Peer-to-peer and international transfers
-1. Digital wallets and virtual cards for e-commerce transactions
+2. Credit cards with integrated rewards programs
+3. Crypto accounts that allow customers to buy, sell, and hold selected cryptocurrencies
+4. Peer-to-peer and international transfers
+5. Digital wallets and virtual cards for e-commerce transactions
 
-Over the last few years, the company has been struggling with customer retention and increasing costs associated with incorrect fraud flagging, as they relied on legacy machine learning models and static thresholds that were not regularly recalibrated to evolving fraud patterns.
+Over the last few years, the company has struggled with customer retention and rising costs associated with incorrect fraud flagging, as it relied on legacy machine learning models and static thresholds that were not regularly recalibrated to keep pace with evolving fraud patterns.
 
-## Project overview
+## Project Overview
 
-For the scope of this project, we will focus con transactions between the period of 2022 and 2025, since this has been the most underperforming range, largely due to the COVID-19 pandemic after-effects.
+For the scope of this project, we will focus on transactions from 2022 to 2025, as this period has been the most underperforming range, largely due to the after-effects of the COVID-19 pandemic.
 
-During these years, the company has processed **50,128** transactions, from which **977** have been confirmed to be fraudulent transactions, representing **1.95%** of total transactions.
+During these years, the company processed **50,128** transactions, of which **977** were confirmed as fraudulent, representing **1.95%** of all transactions.
 
-Machine learning models analize transaction patterns over time and output a flag score that ranges between 0 and 1000, representing the probability that a given transaction is fraud. After that, the system compares this score with a fixed threshold of 700, meaning that every transaction with a score greater or equal to this threshold is flagged as fraud and blocked.
+Machine learning models analyze transaction patterns over time and output a flag score ranging from 0 to 1000, representing the probability that a given transaction is fraudulent. The system then compares this score with a fixed threshold of 700, meaning that every transaction with a score greater than or equal to this threshold is flagged as fraud and blocked.
 
-The following confusion matrix shows the flag results:
+The following confusion matrix shows the flagging results:
 
 <div align='center'>
 	<img width='60%' src='assets/current_confusion_matrix.png'/>
 </div>
 <br>
 
-Given these values, the resulting core metrics arise:
+Based on these values, the key metrics are as follows:
 
 | Metric | Value |
 | --- | --- |
@@ -42,30 +42,30 @@ Given these values, the resulting core metrics arise:
 | Precision | 25.63% |
 | Accuracy | 95.76% |
 
-Such high False Positive Rate coincides with customer churn rising over the years.
+Such a high false positive rate aligns with rising customer churn over the years.
 
 <div align='center'>
 	<img width='80%' src='assets/current_fpr.png'/>
 </div>
 <br>
 
-Aside from this, it's been reported that total costs associated with fraud activity and incorrect flaggings total over **$560K** dollars.
+It has also been reported that total costs associated with fraud activity and incorrect flaggings exceed **$560K**.
 
 ## Objective and Key Points (OKR)
 
-Fraud Strategy and Financial department has made it clear that they need to meet the following goals:
+The Fraud Strategy and Finance teams have made it clear that they need to meet the following goals:
 
 ### 1. Halve False Positive Rates by December 2026
-### 2. Reduce Annual costs associated to fraud 25% by EOY 
+### 2. Reduce Annual Fraud-Related Costs by 25% by Year-End
 
-## Stakeholder questions
+## Stakeholder Questions
 
 ### Fraud Strategy
-1. What are the best fields we can use to increase system fraud detection?
-1. Are there any helpful interactions between these fields?
-1. Do we have to adjust the flagging threshold? if yes, which value should be used?
-1. When a transaction seems to have high fraud probability, how should we scale up that probability?
-1. What features and parameters are recommended to reduce FPR and total costs?
+1. Which fields are most useful for improving fraud detection?
+2. Are there any meaningful interactions between these fields?
+3. Should the flagging threshold be adjusted, and if so, what value should be used?
+4. When a transaction appears to have a high fraud probability, how should that probability be scaled?
+5. What features and parameters are recommended to reduce FPR and total costs?
 
 ## Dataset Structure and ERD (Entity Relationship Diagram)
 
@@ -73,18 +73,18 @@ Fraud Strategy and Financial department has made it clear that they need to meet
 	<img width='80%' src='assets/entity_relationship_diagram.png'/>
 </div>
 
-## Transaction field analysis
+## Transaction Field Analysis
 
-We will utilize **logistic regression** to adjust the Machine Learning Score and better adjust probability of fraud as this method always outputs a number from 0 and 1, so that the scales don't go outside the range of 0% and 100%.
+We will use **logistic regression** to adjust the machine learning score and better estimate the probability of fraud, since this method always outputs a value between 0 and 1, keeping the scale within the 0% to 100% range.
 
-First, we need to calculate the Information Value (IV) of each of the individual columns and interaction between 2 fields, so that we have a better understanding of what columns are better at catching fraud and use them to get valuable insights.
+First, we need to calculate the Information Value (IV) for each individual column and for interactions between two fields so that we can better understand which columns are most effective at identifying fraud and use them to derive valuable insights.
 
-IV value Reference table:
+IV Reference Table:
 
 | IV | Interpretation |
 | --- | --- |
 | <0.1 | Weak |
-| 0.1 - 0.3 | Medium/useful|
+| 0.1 - 0.3 | Medium / useful |
 | >0.3 | Strong |
 
 <br>
@@ -107,11 +107,11 @@ IV value Reference table:
 </div>
 <br>
 
-- November, december and january consistently register higher fraud post-pandemic with **fraud rates over 4%**.
+- November, December, and January consistently show higher fraud rates post-pandemic, with **fraud rates above 4%**.
 
-- Special holidays during this season **(Black Friday, Chrismas, New Year, etc)** see an increase in sales and transaction volume, offering bigger opportunities for malicious entities to operate.
+- Special holidays during this season (**Black Friday, Christmas, New Year, etc.**) lead to increased sales and transaction volume, creating more opportunities for malicious actors.
 
-- WoE (Weight of Evidence) of transactions done between november and january is 0.8113, which increases the odds of these transactions of being fraud by **2.25x** more than the others.
+- The WoE (Weight of Evidence) for transactions made between November and January is 0.8113, which increases the odds of fraud by **2.25x** compared with other periods.
 
 <br>
 <br>
@@ -123,11 +123,11 @@ IV value Reference table:
 
 - More people make purchases during **lunch breaks and throughout the workday**, giving fraudsters more legitimate transactions to hide among.
 
-- Transactions made in the afternoon look "ordinary". **A purchase at 2 PM is often less suspicious than one at 3 AM**.
+- Transactions made in the afternoon often look ordinary. **A purchase at 2 PM is typically less suspicious than one at 3 AM**.
 
-- **Fraud rings often operate during standard working hours** when customer service teams, mule accounts, and collaborators are active and can respond quickly if issues arise.
+- **Fraud rings often operate during standard working hours**, when customer service teams, mule accounts, and collaborators are active and can respond quickly if issues arise.
 
-- WoE: 0.6016, increasing odds by around **83%** of being fraud.
+- The WoE is 0.6016, increasing the odds of fraud by around **83%**.
 
 <br>
 <br>
@@ -137,9 +137,9 @@ IV value Reference table:
 </div>
 <br>
 
-- Fraud detection can become more precise when 2 or more fields are present in a transaction. In this case, both fields being high risk, there is no surprise they increase fraud rates when combined.
+- Fraud detection can become more precise when two or more fields are present in a transaction. When both fields are high risk, it is unsurprising that fraud rates increase when they are combined.
 
-- WoE: 1.4361, increasing odds by around **4.2x** of being fraud, working better than flagging individually.
+- The WoE is 1.4361, increasing the odds of fraud by around **4.2x**, which performs better than flagging each indicator individually.
 
 <br>
 <br>
@@ -149,13 +149,13 @@ IV value Reference table:
 </div>
 <br>
 
-- Digital goods, such as gift cards, gaming credits, software licenses, and subscriptions are delivered immediately, giving fraudsters **little time to be stopped**.
+- Digital goods such as gift cards, gaming credits, software licenses, and subscriptions are delivered immediately, giving fraudsters **little time to stop**.
 
-- Flights, hotels, and vacation packages can generate **large profits** from a single successful fraud attempt, hence explaining why travel category exhibits these numbers.
+- Flights, hotels, and vacation packages can generate **large profits** from a single successful fraud attempt, which helps explain why the travel category shows these numbers.
 
-- High value products such as smartphones, laptops, and designer goods can be **converted into cash** relatively easily.
+- High-value products such as smartphones, laptops, and designer goods can be **converted into cash** relatively easily.
 
-- WoE: 0.5786, increasing odds by around **78%** of being fraud.
+- The WoE is 0.5786, increasing the odds of fraud by around **78%**.
 
 <br>
 <br>
@@ -165,13 +165,13 @@ IV value Reference table:
 </div>
 <br>
 
-- Fraud rates increase as transactions move further away from physical possession and rely more heavily on digital identity.
+- Fraud rates increase as transactions move farther away from physical possession and rely more heavily on digital identity.
 
-- Traditional channels tend to have stronger friction and verification.
+- Traditional channels tend to involve stronger friction and verification.
 
 - Mobile app fraud is frequently linked to account takeover.
 
-- WoE: 0.3398, increasing odds by **40%** of being fraud.
+- The WoE is 0.3398, increasing the odds of fraud by **40%**.
 
 <br>
 <br>
@@ -181,28 +181,28 @@ IV value Reference table:
 </div>
 <br>
 
-- Larger transactions are more attractive to fraudsters, as they are less common than the low value transactions.
+- Larger transactions are more attractive to fraudsters because they are less common than low-value transactions.
 
-- Since these transactions are more routinary, they concentrate higher volumne, but seems like malicious agents find higher amount transactions more than worth it.
+- Although these transactions are more routine and concentrate higher volume, malicious actors appear to find them worthwhile.
 
 - Risk often increases outside the normal spending band.
 
-- WoE: -1.6775, reducing odds by **81%** of being fraud.
+- The WoE is -1.6775, reducing the odds of fraud by **81%**.
 
-## Final results
+## Final Results
 
-After analysing these fields and having obtained the best logit values based on Weight of Evidence calculation, we can turn this information into conditional features that, when met by transactions, can increase or decrease its likelyhood of being fraud.
+After analyzing these fields and obtaining the best logit values based on Weight of Evidence calculations, we can turn this information into conditional features that, when met by a transaction, can increase or decrease its likelihood of being fraudulent.
 
-Now, the final step is to determine what should be the best threshold by which we consider a transaction legitimate or fraud. The focus is on reducing the False Positive Rates and total costs associated with fraud.
+The next step is to determine the best threshold for classifying a transaction as legitimate or fraudulent. The focus is on reducing false positive rates and total fraud-related costs.
 
-It's worth mentioning that:
+It is worth noting that:
 
 > [!NOTE]
-> Higher thresholds naturally decrease False Positive Rates, but may also increase False Negatives, which significantly increases costs, since failing to catch actual fraud reduces chances of recovering the funds, potentially incurring chargebacks of 100%+.
+> Higher thresholds naturally decrease false positive rates, but they may also increase false negatives, which significantly raises costs because failing to catch actual fraud reduces the chances of recovering funds and may lead to chargebacks of 100% or more.
 
 <br>
 
-The results are as shown:
+The results are shown below:
 
 <div align='center'>
 	<img width='80%' src='assets/best_threshold.png'/>
@@ -210,7 +210,7 @@ The results are as shown:
 
 <br>
 
-This threshold was carefully chosen as **reduces costs under $400k and fraud rates under 1%**.
+This threshold was carefully chosen because it **reduces costs to under $400K and keeps fraud rates below 1%**.
 
 <br>
 
@@ -233,27 +233,51 @@ This threshold was carefully chosen as **reduces costs under $400k and fraud rat
 
 ## Key Takeaways and Recommendations
 
-For the Fraud Strategy department:
+For the Fraud Strategy team:
 
-- Utilize Logistic regression as the main method for adjusting and testing fraud detection approaches.
+- Use logistic regression as the main method for adjusting and testing fraud detection approaches.
 
-- Key fields to pay most attention to: Transaction month, hour, merchant category, channel and transaction USD amount, as these columns offer higher precision and accuracy at flagging fraud activity.
+- Pay particular attention to the following fields: transaction month, hour, merchant category, channel, and transaction USD amount, as these columns offer higher precision and accuracy when flagging fraud activity.
 
-- Use these logit values as reference for calibrating flagging rules:
+- Use these logit values as a reference for calibrating flagging rules:
 
 | Columns | Conditions | Logit |
 | --- | --- | --- |
-| Transaction month | November, december and january months | 0.8113 |
-| Transaction hour | Between 12pm and 5pm | 0.6016 |
+| Transaction month | November, December, and January | 0.8113 |
+| Transaction hour | Between 12 PM and 5 PM | 0.6016 |
 | Month + hour | Risky month and risky hours as previously described | 1.4361 |
-| Merchant category | High value retail, travel and digital goods | 0.5786 |
-| Channel | Virtual card, fake mobile app, mobile app and SIM swap | 0.3398 |
+| Merchant category | High-value retail, travel, and digital goods | 0.5786 |
+| Channel | Virtual card, fake mobile app, mobile app, and SIM swap | 0.3398 |
 | Transaction USD amount | Between $0.51 and $832.03 | -1.6775 |
 
 > [!WARNING]
-> Only use these parameters AS GENERAL REFERENCE, since these were ones that offered better results during testing.
+> Use these parameters only as a general reference, since they were the ones that produced better results during testing.
 
 <br>
 
-- Closely monitor main KPIs every month (FPR and total costs) and adjust parameters to effectively improve future results.
-- Avoid overfitting with many features and conditions as this can harshly impact detection on future, frequent changing data.
+- Closely monitor key KPIs every month (FPR and total costs) and adjust parameters to improve future results.
+- Avoid overfitting with too many features and conditions, as this can seriously hurt detection performance on future, rapidly changing data.
+
+## Notes
+
+This is a portfolio project using synthetic, AI-generated data to simulate a real-life fraud analytics scenario. GacelaPay is a fictional company shown only for portfolio purposes.
+
+Technologies used:
+
+- SQL
+- Python (Matplotlib, Pandas, NumPy, DuckDB, etc.)
+- Tableau
+
+Python package versions:
+
+| Package | Version |
+| --- | --- |
+| duckdb | 1.5.0 |
+| gender-guesser | 0.4.0 |
+| matplotlib | 3.10.8 |
+| openpyxl | 3.1.5 |
+| pip | 26.0.1 |
+| pycountry | 26.2.16 |
+| scikit-learn | 1.8.0 |
+| xlwings | 0.33.20 |
+| yfinance | 1.2.0 |
